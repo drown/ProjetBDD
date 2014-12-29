@@ -78,7 +78,12 @@ class CrudConcept
 				end($tabConcept)->addSpecialise($ligneSpecialise['NOM']);			
 		}
 
-		return $tabConcept;
+		oci_free_statement($requete);
+		oci_free_statement($requeteSpecialise);
+		oci_free_statement($requeteGeneralise);
+		oci_close($conn);
+
+			return $tabConcept;
 	}
 
 	public function getByNom($nom)
