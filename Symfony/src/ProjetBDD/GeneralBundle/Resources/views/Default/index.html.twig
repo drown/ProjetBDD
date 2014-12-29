@@ -1,0 +1,9 @@
+coucou
+
+{% for c in result %}	
+	{{c.nomConcept}}
+	{{c.description}}
+	{% for g in c.generalise %}
+		{{g}}
+	{% endfor %}
+{% endfor %}

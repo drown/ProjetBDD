@@ -1,0 +1,1 @@
+{ parameters: { database_driver: oci8, database_host: 127.0.0.1, database_port: null, database_name: xe, database_user: ProjetBDD, database_password: pass, mailer_transport: smtp, mailer_host: 127.0.0.1, mailer_user: null, mailer_password: null, locale: en, secret: f4a0d130e81099fae27c432bf3066945f, database_path: null } }

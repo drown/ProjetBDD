@@ -1,0 +1,3 @@
+services:
+    ProjetBDD.CRUD.Concept :
+        class : ProjetBDD\Generalbundle\CRUD\CrudConcept

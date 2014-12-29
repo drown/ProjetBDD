@@ -1,0 +1,12 @@
+ProjetBDDGeneralIndex:
+    path:     /ProjetBDD
+    defaults: { _controller: ProjetBDDGeneralBundle:Default:index }
+
+ProjetBDDGeneralRecherche :
+    path : /projetBDD/recherche
+    defaults : {_controller : ProjetBDDGeneralBundle:Default:recherche}
+
+ProjetBDDGeneralAfficher :
+    path : /ProjetBDD/ProjetBDDGeneralAfficher
+    defaults : {_controller : ProjetBDDGeneralBundle:Defaults:afficher}
+
