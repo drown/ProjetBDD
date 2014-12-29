@@ -1,9 +1,15 @@
-coucou
+{% extends '::layout.html.twig' %}
 
-{% for c in result %}	
-	{{c.nomConcept}}
-	{{c.description}}
-	{% for g in c.generalise %}
-		{{g}}
-	{% endfor %}
-{% endfor %}
+{% block title %} Accueil {% endblock %}
+
+{% block corps %}
+
+<p><img src="{{ asset('logo.png') }}" width="100px"/>Bienvenue sur notre Thésaurus !</p>
+           <form class="form-inline" style="margin-top:50px; margin-left : 15px;">
+            <div class="form-group">
+              <input type="text" placeholder="Exemple : Soldat" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Rechercher</button>
+          </form>
+
+{% endblock %}
