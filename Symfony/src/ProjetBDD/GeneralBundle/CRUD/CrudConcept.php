@@ -241,73 +241,64 @@ class CrudConcept
 				$tabGeneralise[] = $ligneGeneralise['nom'];
 			}
 
-			//Nos tableaux sont remplis avec les noms des concepts qui specialise et generalise le concept a update
+			//On vite les listes specialise et generalise
+			//On les re remplis avec le tableau de concept
+			$requete = oci_parse($connect, 'UPDATE Concept c SET c.generalise = TabConcept_t(), c.specialise = TabConcept_t() WHERE nomConcept = :nomC');
+			ocibindbyname($requete, ":nomC", $concept->getNomConcept());
+			$exe = oci_execute($requete);
+			if (!$exe)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+			}
 
 			foreach ($concept->specialise as $key => $value) {
-				//On regarde pour chaque objet qu'on a en PHP, si il est dans le tableau BDD
-				if (!in_array($value->getNomConcept(), $tabSpecialise) {
-					//On ajoute
-					$requete = oci_parse($connect, 'INSERT INTO Table(
-														SELECT c.specialise 
-														FROM Concept c 
-														WHERE nomConcept = :nomC) 
-													Values (
-														SELECT REF(c2) 
-														FROM Concept c2 
-														WHERE c2.nomConcept = :nomC2
-															)');
-					ocibindbyname($requete, ':nomC', $concept->getNomConcept());
-					ocibindbyname($requete, ':nomC2', $value->getNomConcept());
-					$exe = oci_execute($requete);
-					if (!$exe)
-					{
-						$e = oci_error();
-						throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-					}
-				}	
+
+				//On ajoute
+				$requete = oci_parse($connect, 'INSERT INTO Table(
+													SELECT c.specialise 
+													FROM Concept c 
+													WHERE nomConcept = :nomC) 
+												Values (
+													SELECT REF(c2) 
+													FROM Concept c2 
+													WHERE c2.nomConcept = :nomC2
+														)');
+				ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+				ocibindbyname($requete, ':nomC2', $value->getNomConcept());
+				$exe = oci_execute($requete);
+				if (!$exe)
+				{
+					$e = oci_error();
+					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+				}
+					
 			}
 
 			foreach ($concept->generalise as $key => $value) {
-				if (!in_array($value->getNomConcept(), $tabGeneralise) {
-					//On ajoute
-					$requete = oci_parse($connect, 'INSERT INTO Table(
-														SELECT c.generalise 
-														FROM Concept c 
-														WHERE nomConcept = :nomC) 
-													Values (
-														SELECT REF(c2) 
-														FROM Concept c2 
-														WHERE c2.nomConcept = :nomC2
-															)');
-					ocibindbyname($requete, ':nomC', $concept->getNomConcept());
-					ocibindbyname($requete, ':nomC2', $value->getNomConcept());
-					$exe = oci_execute($requete);
-					if (!$exe)
-					{
-						$e = oci_error();
-						throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-					}
+				
+				//On ajoute
+				$requete = oci_parse($connect, 'INSERT INTO Table(
+													SELECT c.generalise 
+													FROM Concept c 
+													WHERE nomConcept = :nomC) 
+												Values (
+													SELECT REF(c2) 
+													FROM Concept c2 
+													WHERE c2.nomConcept = :nomC2
+														)');
+				ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+				ocibindbyname($requete, ':nomC2', $value->getNomConcept());
+				$exe = oci_execute($requete);
+				if (!$exe)
+				{
+					$e = oci_error();
+					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 				}
+				
 			}
 
-			foreach ($tabGeneralise as $key => $value) {
-				// dans tab, on a tout les concept qui sont dans la BD,
-				// On regarde si ils sont dans le tab du concept a update, si non
-				// On le retire.
-				if (!in_array($value->getNomConcept(), $concept->getGeneralise())) {
-					//On delete, mais je sias pas faire encore.
-				}	
-			}
-
-			foreach ($tabSpecialise as $key => $value) {
-				// dans tab, on a tout les concept qui sont dans la BD,
-				// On regarde si ils sont dans le tab du concept a update, si non
-				// On le retire.
-				if (!in_array($value->getNomConcept(), $concept->getSpecialise())) {
-					//On delete, mais je sais pas faire encore	
-				}
-			}
-		}
+			
 	}
 
 	public function creer($concept)
