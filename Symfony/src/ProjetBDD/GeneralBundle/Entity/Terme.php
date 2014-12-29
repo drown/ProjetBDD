@@ -50,6 +50,12 @@ class Terme
 	public function removeAssocie($associe)
 	{
 		// remove un élément du tableau.
+		foreach ($this->associe as $i => $value) {
+			if ($value->nomTerme == $associe->nomTerme) {
+				unset($this->associe[$i]);
+				$this->associe = array_values($this->associe);
+			}
+		}
 	}
 
 	public function addTraduit($terme)
@@ -65,6 +71,12 @@ class Terme
 	public function removeTraduit($terme)
 	{
 		// remove un élément du tableau.
+		foreach ($this->traduit as $i => $value) {
+			if ($value->nomTerme == $terme->nomTerme) {
+				unset($this->traduit[$i]);
+				$this->traduit = array_values($this->traduit);
+			}
+		}
 	}
 
 	public function addSynonymes($terme)
@@ -80,5 +92,11 @@ class Terme
 	public function removeSynonymes($terme)
 	{
 		// remove un élément du tableau.
+		foreach ($this->synonymes as $i => $value) {
+			if ($value->nomTerme == $terme->nomTerme) {
+				unset($this->synonymes[$i]);
+				$this->synonymes = array_values($this->synonymes);
+			}
+		}
 	}
 }
