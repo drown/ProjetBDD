@@ -176,7 +176,7 @@ class CrudConcept
 			$e = oci_error();
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
-
+		//On recupere le nom et description du concept
 		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept WHERE nomConcept = :nomC');
 		ocibindbyname($requete, ':nomC', $concept->nomConcept);
 		if (!$requete)
@@ -193,7 +193,7 @@ class CrudConcept
 			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 		}
 		if (oci_num_rows($requete) == 1) {
-
+			//On met a jour le nom et la description
 			$ligne = oci_fetch_array($requete, OCI_ASSOC);
 			$requete = 'UPDATE Concept SET nomConcept = :nomC, description = :desc WHERE nomConcept = :nomC';
 			ocibindbyname($requete, ':nomC', $concept->getNomConcept());
@@ -241,7 +241,10 @@ class CrudConcept
 				$tabGeneralise[] = $ligneGeneralise['nom'];
 			}
 
+			//Nos tableaux sont remplis avec les noms des concepts qui specialise et generalise le concept a update
+
 			foreach ($concept->specialise as $key => $value) {
+				//On regarde pour chaque objet qu'on a en PHP, si il est dans le tableau BDD
 				if (!in_array($value->getNomConcept(), $tabSpecialise) {
 					//On ajoute
 					$requete = oci_parse($connect, 'INSERT INTO Table(
@@ -287,7 +290,23 @@ class CrudConcept
 				}
 			}
 
-			//TODO : Il manque a faire le trop plein..
+			foreach ($tabGeneralise as $key => $value) {
+				// dans tab, on a tout les concept qui sont dans la BD,
+				// On regarde si ils sont dans le tab du concept a update, si non
+				// On le retire.
+				if (!in_array($value->getNomConcept(), $concept->getGeneralise())) {
+					//On delete, mais je sias pas faire encore.
+				}	
+			}
+
+			foreach ($tabSpecialise as $key => $value) {
+				// dans tab, on a tout les concept qui sont dans la BD,
+				// On regarde si ils sont dans le tab du concept a update, si non
+				// On le retire.
+				if (!in_array($value->getNomConcept(), $concept->getSpecialise())) {
+					//On delete, mais je sais pas faire encore	
+				}
+			}
 		}
 	}
 
