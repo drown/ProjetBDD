@@ -1,3 +1,9 @@
 services:
     ProjetBDD.CRUD.Concept :
         class : ProjetBDD\Generalbundle\CRUD\CrudConcept
+
+    ProjetBDD.CRUD.Terme :
+        class : ProjetBDD\Generalbundle\CRUD\CrudTerme
+
+    ProjetBDD.CRUD.TermeVedette :
+        class : ProjetBDD\Generalbundle\CRUD\CrudTermeVedette

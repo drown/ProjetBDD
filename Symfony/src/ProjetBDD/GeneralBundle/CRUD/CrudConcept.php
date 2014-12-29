@@ -86,11 +86,6 @@ class CrudConcept
 
 	}
 
-	public function getByTermeVedette($terme)
-	{
-
-	}
-
 	public function update($concept)
 	{
 
