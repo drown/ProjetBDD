@@ -5,18 +5,48 @@ namespace ProjetBDD\Generalbundle\CRUD;
 
 class CrudTermeVedette
 {
-	function getByOID($oid)
+	public function getByConcept($concept)
 	{
 
 	}
 
-	function findByName($name);
+	public function findByNom($name);
 	{
 
 	}
 
-	function getByName($name);
+	public function getByNom($name);
 	{
 
+	}
+
+	public function getByAssociation($terme)
+	{
+
+	}
+
+	public function getByTraduction($terme)
+	{
+
+	}
+
+	public function getBySynonymes($terme)
+	{
+		
+	}
+
+	public function update($concept)
+	{
+
+	}
+
+	public function creer($concept)
+	{
+
+	}
+
+	public function supprimer($concept)
+	{
+		
 	}
 }

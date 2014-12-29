@@ -7,7 +7,7 @@ use ProjetBDD\GeneralBundle\Entity\Concept;
 
 class CrudConcept
 {
-	function findByNom($nom)
+	public function findByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
@@ -79,5 +79,30 @@ class CrudConcept
 		}
 
 		return $tabConcept;
+	}
+
+	public function getByNom($nom)
+	{
+
+	}
+
+	public function getByTermeVedette($terme)
+	{
+
+	}
+
+	public function update($concept)
+	{
+
+	}
+
+	public function creer($concept)
+	{
+
+	}
+
+	public function supprimer($concept)
+	{
+
 	}
 }
