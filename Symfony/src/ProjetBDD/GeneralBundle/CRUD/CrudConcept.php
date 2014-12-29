@@ -169,12 +169,162 @@ class CrudConcept
 
 	public function update($concept)
 	{
+		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
+		if (!$connect)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de connexion : '. $e['message']);
+		}
+
+		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept WHERE nomConcept = :nomC');
+		ocibindbyname($requete, ':nomC', $concept->nomConcept);
+		if (!$requete)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de requête : '. $e['message']);
+		}
+
+		$exe = oci_execute($requete);
+
+		if (!$exe)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+		}
+		if (oci_num_rows($requete) == 1) {
+
+			$ligne = oci_fetch_array($requete, OCI_ASSOC);
+			$requete = 'UPDATE Concept SET nomConcept = :nomC, description = :desc WHERE nomConcept = :nomC';
+			ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+			ocibindbyname($requete, ':descC', $concept->getDescription());
+			if (!$requete)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur de requête : '. $e['message']);
+			}
+
+			$exe = oci_execute($requete);
+
+			if (!$exe)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+			}
+
+			foreach ($concept->specialise as $key => $value) {
+				//TODO
+			}
+
+			foreach ($concept->generalise as $key => $value) {
+				//TODO
+			}
+		}
 	}
 
 	public function creer($concept)
 	{
+		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
+		if (!$connect)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de connexion : '. $e['message']);
+		}
+
+		$requete = oci_parse($connect, 'SELECT nomConcept FROM Concept WHERE nomConcept = :nomC');
+		ocibindbyname($requete, ':nomC', $concept->nomConcept);
+		if (!$requete)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de requête : '. $e['message']);
+		}
+
+		$exe = oci_execute($requete);
+
+		if (!$exe)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+		}
+		if (oci_num_rows($requete) == 0) {
+			//Le concept existe pas, on insere
+			$requete = oci_parse($connect, 'INSERT INTO Concept VALUES (:nomC, :descC, tabConcept_t(), tabConcept_t());');
+			ocibindbyname($connect, ':nomC', $concept->getNomConcept());
+			ocibindbyname($connect, ':descC', $concept->getDescription());
+			if (!$requete)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur de requête : '. $e['message']);
+			}
+
+			$exe = oci_execute($requete);
+
+			if (!$exe)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+			}
+			foreach ($concept->generalise as $key => $value) {
+				//On insere dans le tableau generalise la reference d'un concept c2
+				$requete = oci_parse($connect, 'INSERT INTO Table(
+													SELECT c.generalise 
+													FROM Concept c 
+													WHERE nomConcept = :nomC) 
+												Values (
+													SELECT REF(c2) 
+													FROM Concept c2 
+													WHERE c2.nomConcept = :nomC2
+														)');
+				ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+				ocibindbyname($requete, ':nomC2', $value);
+				if (!$requete)
+				{
+					$e = oci_error();
+					throw new \Exception('Erreur de requête : '. $e['message']);
+				}
+
+				$exe = oci_execute($requete);
+
+				if (!$exe)
+				{
+					$e = oci_error();
+					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+				}
+			}
+
+			foreach ($specialise as $key => $value) {
+				$requete = oci_parse($connect, 'INSERT INTO Table(
+													SELECT c.specialise 
+													FROM Concept c 
+													WHERE nomConcept = :nomC) 
+												Values (
+													SELECT REF(c2) 
+													FROM Concept c2 
+													WHERE c2.nomConcept = :nomC2
+														)');
+				ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+				ocibindbyname($requete, ':nomC2', $value);
+				if (!$requete)
+				{
+					$e = oci_error();
+					throw new \Exception('Erreur de requête : '. $e['message']);
+				}
+
+				$exe = oci_execute($requete);
+
+				if (!$exe)
+				{
+					$e = oci_error();
+					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+				}
+			}
+
+
+			oci_free_statement($requete);
+			oci_close($connect);
+			
+		}
 	}
 
 	public function supprimer($concept)
@@ -210,10 +360,9 @@ class CrudConcept
 			return NULL;
 		}
 		else if (oci_num_rows($requete) == 1) {
-			$requeteUpdate = "SELECT REF(c) FROM Concept c WHERE nomConcept = :nomC";
-			ocibindbyname($requeteUpdate, ':nomC', $concept->nomConcept);
+
 			//mise a jour des ref dans tout les autres concept... RELOU!
-			$requete = oci_parse($connect, 'SELECT nomConcept FROM Concept');
+			/*$requete = oci_parse($connect, 'SELECT nomConcept FROM Concept');
 			if (!$requete)
 			{
 				$e = oci_error();
@@ -261,7 +410,9 @@ class CrudConcept
 					}
 				}
 
-			}
+			}*/
+
+
 			//Suppresion
 			$requeteDelete = oci_parse($connect, 'DELETE FROM Concept WHERE nomConcept = :nomC');
 			ocibindbyname($requeteDelete, ':nomC', $concept->nomConcept);
