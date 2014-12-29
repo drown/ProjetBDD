@@ -48,6 +48,13 @@ class Concept
 	public function removeGeneralise($concept)
 	{
 		// remove un élément du tableau.
+		foreach ($this->generalise as $i => $value) {
+			if ($value->nomConcept == $concept->nomConcept) {
+				unset($this->generalise[$i]);
+				$this->generalise = array_values($this->generalise);
+			}
+		}
+
 	}
 
 	public function addSpecialise($concept)
@@ -63,5 +70,11 @@ class Concept
 	public function removeSpecialise($concept)
 	{
 		// remove un élément du tableau.
+		foreach ($this->specialise as $i => $value) {
+			if ($value->nomConcept == $concept->nomConcept) {
+				unset($this->specialise[$i]);
+				$this->specialise = array_values($this->specialise);
+			}
+		}
 	}
 }
