@@ -136,7 +136,7 @@ class CrudConcept
 				}
 			
 				while (($ligneGeneralise = oci_fetch_array($requeteGeneralise, OCI_ASSOC))) {
-					$concept->addGeneralise($ligneGeneralise)
+					$concept->addGeneralise($ligneGeneralise);
 				}
 				
 
@@ -152,7 +152,7 @@ class CrudConcept
 				}
 			
 				while (($ligneSpecialise = oci_fetch_array($requeteSpecialise, OCI_ASSOC))) {
-					$concept->addSpecialise($ligneSpecialise)
+					$concept->addSpecialise($ligneSpecialise);
 				}	
 			}
 
@@ -212,13 +212,82 @@ class CrudConcept
 				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 			}
 
+			// On recupere dans un tableau php, tout les noms de concept associe a ce concept
+			$tabSpecialise = array();
+			$tabGeneralise = array();
+			$requete = oci_parse($connect, 'SELECT DEREF(VALUE(T)).nomConcept as nom FROM Concept c, Table(c.specialise) T WHERE nomConcept = :nomC');
+			ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+			$exe = oci_execute($requete);
+			if (!$exe)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+			}
+		
+			while (($ligneSpecialise = oci_fetch_array($requete, OCI_ASSOC))) {
+				$tabSpecialise[] = $ligneSpecialise['nom'];
+			}
+
+			$requete = oci_parse($connect, 'SELECT DEREF(VALUE(T)).nomConcept as nom FROM Concept c, Table(c.generalise) T WHERE nomConcept = :nomC');
+			ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+			$exe = oci_execute($requete);
+			if (!$exe)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+			}
+		
+			while (($ligneGeneralise = oci_fetch_array($requete, OCI_ASSOC))) {
+				$tabGeneralise[] = $ligneGeneralise['nom'];
+			}
+
 			foreach ($concept->specialise as $key => $value) {
-				//TODO
+				if (!in_array($value->getNomConcept(), $tabSpecialise) {
+					//On ajoute
+					$requete = oci_parse($connect, 'INSERT INTO Table(
+														SELECT c.specialise 
+														FROM Concept c 
+														WHERE nomConcept = :nomC) 
+													Values (
+														SELECT REF(c2) 
+														FROM Concept c2 
+														WHERE c2.nomConcept = :nomC2
+															)');
+					ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+					ocibindbyname($requete, ':nomC2', $value->getNomConcept());
+					$exe = oci_execute($requete);
+					if (!$exe)
+					{
+						$e = oci_error();
+						throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+					}
+				}	
 			}
 
 			foreach ($concept->generalise as $key => $value) {
-				//TODO
+				if (!in_array($value->getNomConcept(), $tabGeneralise) {
+					//On ajoute
+					$requete = oci_parse($connect, 'INSERT INTO Table(
+														SELECT c.generalise 
+														FROM Concept c 
+														WHERE nomConcept = :nomC) 
+													Values (
+														SELECT REF(c2) 
+														FROM Concept c2 
+														WHERE c2.nomConcept = :nomC2
+															)');
+					ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+					ocibindbyname($requete, ':nomC2', $value->getNomConcept());
+					$exe = oci_execute($requete);
+					if (!$exe)
+					{
+						$e = oci_error();
+						throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+					}
+				}
 			}
+
+			//TODO : Il manque a faire le trop plein..
 		}
 	}
 
