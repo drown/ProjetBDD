@@ -79,8 +79,6 @@ class CrudConcept
 		}
 
 		oci_free_statement($requete);
-		oci_free_statement($requeteSpecialise);
-		oci_free_statement($requeteGeneralise);
 		oci_close($connect);
 
 		return $tabConcept;
@@ -125,7 +123,7 @@ class CrudConcept
 				$concept->setNomConcept($ligne['nomConcept']);
 				$concept->setDescription($ligne['description']);
 				$requeteGeneralise = oci_parse($connect, 'SELECT DEREF(VALUE(g)).nomConcept as nom FROM Concept c, TABLE(c.generalise) g WHERE c.nomConcept = :nomC');
-				oci_bind_by_name($requeteGeneralise, ':nomC', $ligne['nomConcept']);
+				oci_bind_by_name($requeteGeneralise, ':nomC', $ligne['NOMCONCEPT']);
 
 				$exe = oci_execute($requeteGeneralise);
 
@@ -141,7 +139,7 @@ class CrudConcept
 				
 
 				$requeteSpecialise = oci_parse($connect, 'SELECT DEREF(VALUE(s)).nomConcept as nom FROM Concept c, Table(c.specialise) s WHERE c.nomConcept = :nomC');
-				oci_bind_by_name($requeteSpecialise, ':nomC', $ligne['nomConcept']);
+				oci_bind_by_name($requeteSpecialise, ':nomC', $ligne['NOMCONCEPT']);
 
 				$exe = oci_execute($requeteSpecialise);
 
@@ -178,7 +176,7 @@ class CrudConcept
 		}
 		//On recupere le nom et description du concept
 		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept WHERE nomConcept = :nomC');
-		ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+		ocibindbyname($requete, ':nomC', $concept->getNnomConcept());
 		if (!$requete)
 		{
 			$e = oci_error();
@@ -211,8 +209,6 @@ class CrudConcept
 				$e = oci_error();
 				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 			}
-
-
 
 			//On vite les listes specialise et generalise
 			//On les re remplis avec le tableau de concept
@@ -270,10 +266,9 @@ class CrudConcept
 				}
 				
 			}
-
-			oci_free_statement($requete);
-			oci_close($connect);
+		}
 	}
+
 
 	public function creer($concept)
 	{
@@ -286,7 +281,7 @@ class CrudConcept
 		}
 
 		$requete = oci_parse($connect, 'SELECT nomConcept FROM Concept WHERE nomConcept = :nomC');
-		ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+		ocibindbyname($requete, ':nomC', $concept->nomConcept);
 		if (!$requete)
 		{
 			$e = oci_error();
@@ -346,7 +341,7 @@ class CrudConcept
 				}
 			}
 
-			foreach ($concept->getSpecialise() as $key => $value) {
+			foreach ( $concept->getSpecialise() as $key => $value) {
 				$requete = oci_parse($connect, 'INSERT INTO Table(
 													SELECT c.specialise 
 													FROM Concept c 
