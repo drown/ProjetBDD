@@ -31,6 +31,7 @@ la suite des indices correspondent aux objets TermeVedette auquel il est synonym
 - update($terme) : Même principe que pour un concept.
 Attention si on change un élément d'un tab (généralise, spécialise, Synonyme) penser à le changer
 dans le Tab de lautre élément.. et donc faire encore une fois 2 update($terme) comme pour un concept.
+- updateVedette($terme)
 - creer($terme)
 - supprimer($terme)
 
@@ -40,5 +41,4 @@ Hérite de CrudTerme
 
 - getByConcept($concept) : retourne le TermeVedette Associé à un Concept.
 - creer($concept)
-- update($terme)
 - supprimer($terme)
