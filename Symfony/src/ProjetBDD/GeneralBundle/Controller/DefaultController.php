@@ -14,4 +14,9 @@ class DefaultController extends Controller
 
         return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('result' => $result));
     }
+
+    public function rechercheAction()
+    {
+    	
+    }
 }
