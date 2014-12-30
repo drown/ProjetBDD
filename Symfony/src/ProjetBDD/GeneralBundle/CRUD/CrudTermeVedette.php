@@ -266,7 +266,7 @@ class CrudTermeVedette extends CrudTerme
 
 	}
 
-	public function remove($terme)
+	public function supprimer($terme)
 	{
 
 	}

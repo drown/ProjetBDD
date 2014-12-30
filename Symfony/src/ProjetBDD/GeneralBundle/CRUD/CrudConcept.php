@@ -431,7 +431,7 @@ class CrudConcept
 			//Suppresion
 			$requeteDelete = oci_parse($connect, 'DELETE FROM Concept WHERE nomConcept = :nomC');
 			ocibindbyname($requeteDelete, ':nomC', $concept->getNomConcept());
-			if (!$requeteDelete)
+			if (!$requeteDelete)			
 			{
 				$e = oci_error();
 				throw new \Exception('Erreur de requête : '. $e['message']);
