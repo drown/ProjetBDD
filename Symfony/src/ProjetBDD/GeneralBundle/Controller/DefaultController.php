@@ -210,7 +210,7 @@ class DefaultController extends Controller
 			oci_close($connect);
 			//Il manque le tab synonymes.
 			return $this->render('ProjetBDDGeneralBundle:Default:affiche.html.twig', array('nomConcept' => $concept->getNomConcept(),
-																							'descConcept' => $concept->getDescription()
+																							'descConcept' => $concept->getDescription(),
 																							'nomTermeVedette' => $nomTermeVedette,
 																							'descTermeVedette' => $descTermeVedette,
 																							'tabAssocie' => $tabAssocie,
