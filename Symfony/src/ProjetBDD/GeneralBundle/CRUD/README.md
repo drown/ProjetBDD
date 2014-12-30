@@ -18,7 +18,7 @@ fils dans le tab aprés modification des objets. Il faut penser que si on ajoute
 alors il faudra ajouter un fils dans le parents.. (donc 2 objet modifié et 2 update($concept) )
 Penser égaement à créer le concept si il n'éxiste pas encore, la fonction se servira des OID pour les références.
 - creer($concept) créer un concept en BDD.
-- supprimer($concept) : Je dois vraiment l'expliquer ? xD
+- supprimer($concept) : Penser à d'abord supprimer le terme vedette !!!!!!!!
 
 #CrudTerme :
 
