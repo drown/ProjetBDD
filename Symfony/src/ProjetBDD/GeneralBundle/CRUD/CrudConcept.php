@@ -193,7 +193,7 @@ class CrudConcept
 		if (oci_num_rows($requete) == 1) {
 			//On met a jour le nom et la description
 			$ligne = oci_fetch_array($requete, OCI_ASSOC);
-			$requete = 'UPDATE Concept SET nomConcept = :nomC, description = :desc WHERE nomConcept = :nomC';
+			$requete = 'UPDATE Concept SET description = :descC WHERE nomConcept = :nomC';
 			ocibindbyname($requete, ':nomC', $concept->getNomConcept());
 			ocibindbyname($requete, ':descC', $concept->getDescription());
 			if (!$requete)
