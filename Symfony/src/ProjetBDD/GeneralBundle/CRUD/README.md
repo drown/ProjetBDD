@@ -28,10 +28,6 @@ pour savoir si il est vedette ou non.
 - findByNom($nom) : Renvoi un tableau avec la liste des Termes et TermeVedette trouvé.
 - getByNom($nom) : Retourne un tableau avec en indice 0 le Terme et
 la suite des indices correspondent aux objets TermeVedette auquel il est synonymes.
-- getByAssociation($terme) : Prend en argument un Terme et renvoi un tableau contenant la liste des termes
-et TermeVedette associé à celui-ci.
-- getByTraduction($terme) : dessin ?
-- getBySynonymes($terme) : renvoi la Liste des TermeVedette cette fois - ci, qui sont synonymes.
 - update($terme) : Même principe que pour un concept.
 Attention si on change un élément d'un tab (généralise, spécialise, Synonyme) penser à le changer
 dans le Tab de lautre élément.. et donc faire encore une fois 2 update($terme) comme pour un concept.
@@ -42,4 +38,7 @@ dans le Tab de lautre élément.. et donc faire encore une fois 2 update($terme)
 
 Hérite de CrudTerme
 
-- getTermeVedetteByConcept($concept) : retourne le TermeVedette Associé à un Concept.
+- getByConcept($concept) : retourne le TermeVedette Associé à un Concept.
+- creer($concept)
+- update($terme)
+- supprimer($terme)
