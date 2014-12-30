@@ -389,7 +389,7 @@ class CrudConcept
 		}
 
 		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept WHERE nomConcept = :nomC');
-		ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+		oci_bind_by_name($requete, ':nomC', $concept->getNomConcept());
 
 		if (!$requete)
 		{
@@ -404,13 +404,15 @@ class CrudConcept
 			$e = oci_error();
 			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 		}
+
 		if (oci_num_rows($requete) == 0) {
 
 			oci_free_statement($requete);
 			oci_close($connect);
 			return NULL;
 		}
-		else if (oci_num_rows($requete) == 1) {
+		else
+		{
 
 			//mise a jour des ref dans tout les autres concept... RELOU!
 			
@@ -428,9 +430,11 @@ class CrudConcept
 				$this->update($c2);
 			}
 
+			
+
 			//Suppresion
 			$requeteDelete = oci_parse($connect, 'DELETE FROM Concept WHERE nomConcept = :nomC');
-			ocibindbyname($requeteDelete, ':nomC', $concept->getNomConcept());
+			oci_bind_by_name($requeteDelete, ':nomC', $concept->getNomConcept());
 			if (!$requeteDelete)			
 			{
 				$e = oci_error();
@@ -449,10 +453,6 @@ class CrudConcept
 			oci_free_statement($requeteSpecialise);
 			oci_free_statement($requeteGeneralise);
 			oci_close($connect);
-		}
-		else {
-			//Erreur dans les contraintes d'intégrité
-			//Code erreur?
 		}
 	}
 }

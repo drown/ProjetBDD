@@ -42,7 +42,7 @@ class CrudTermeVedette extends CrudTerme
 		{
 			while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
 			{
-				$terme = new Terme;
+				$terme = new TermeVedette;
 				$terme->setNomTerme($ligne['NOMTERME']);
 				$terme->setDescription($ligne['DESCRIPTION']);
 
@@ -102,123 +102,6 @@ class CrudTermeVedette extends CrudTerme
 
 	}
 
-	public function update($terme)
-	{
-		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
-
-		if (!$connect)
-		{
-			$e = oci_error();
-			throw new \Exception('Erreur de connexion : '. $e['message']);
-		}
-
-		$objetTest = $this->getByNom($terme->getNomTerme());
-
-		if ($objetTest != null)
-		{
-
-			$ligne = oci_fetch_array($requete, OCI_ASSOC);
-			$requete = 'UPDATE Terme SET description = :descT WHERE nomTerme = :nom';
-			oci_bind_by_name($requete, ':nom', $terme->getNomTerme());
-			oci_bind_by_name($requete, ':descT', $terme->getDescription());
-			if (!$requete)
-			{
-				$e = oci_error();
-				throw new \Exception('Erreur de requête : '. $e['message']);
-			}
-
-			$exe = oci_execute($requete);
-
-			if (!$exe)
-			{
-				$e = oci_error();
-				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-			}
-
-
-			$requete = oci_parse($connect, 'UPDATE Terme c SET c.associe = TabTerme_t(), c.traduit = TabTerme_t(), c.synonymes = TabTermeVedette_t() WHERE nomTerme = :nom');
-			oci_bind_by_name($requete, ":nom", $terme->getNomTerme());
-			$exe = oci_execute($requete);
-			if (!$exe)
-			{
-				$e = oci_error();
-				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-			}
-
-			foreach ($terme->getAssocie() as $value)
-			{
-				$requeteTest = oci_parse($connect, 'SELECT nomTerme FROM Terme WHERE nomTerme = :nom');
-				oci_bind_by_name($requeteTest, 'nom', $value->getNomTerme());
-				$exe = oci_execute($requeteTest);
-
-				if (oci_num_rows($requeteTest) > 0)
-					$requete = oci_parse($connect, 'INSERT INTO Table(SELECT c.associe FROM TermeVedette c WHERE nomTerme = :nom) Values ((SELECT REF(c2) FROM Terme c2 WHERE c2.nomTerme = :nom2))');
-				else
-					$requete = oci_parse($connect, 'INSERT INTO Table(SELECT c.associe FROM TermeVedette c WHERE nomTerme = :nom) Values ((SELECT REF(c2) FROM TermeVedette c2 WHERE c2.nomTerme = :nom2))');
-
-				oci_bind_by_name($requete, ':nom', $terme->getNomTerme());
-				oci_bind_by_name($requete, ':nom2', $value->getNomTerme());
-
-				$exe = oci_execute($requete);
-				if (!$exe)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-				}
-					
-			}
-
-			foreach ($terme->getTraduit() as $value)
-			{
-				$requeteTest = oci_parse($connect, 'SELECT nomTerme FROM Terme WHERE nomTerme = :nom');
-				oci_bind_by_name($requeteTest, 'nom', $value->getNomTerme());
-				$exe = oci_execute($requeteTest);
-
-				if (oci_num_rows($requeteTest) > 0)
-					$requete = oci_parse($connect, 'INSERT INTO Table(SELECT c.traduit FROM TermeVedette c WHERE nomTerme = :nom) Values ((SELECT REF(c2) FROM Terme c2 WHERE c2.nomTerme = :nom2))');
-				else
-					$requete = oci_parse($connect, 'INSERT INTO Table(SELECT c.traduit FROM TermeVedette c WHERE nomTerme = :nom) Values ((SELECT REF(c2) FROM TermeVedette c2 WHERE c2.nomTerme = :nom2))');
-
-				oci_bind_by_name($requete, ':nom', $terme->getNomTerme());
-				oci_bind_by_name($requete, ':nom2', $value->getNomTerme());
-
-				$exe = oci_execute($requete);
-				if (!$exe)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-				}
-				
-			}
-
-			foreach ($terme->getSynonymes() as $value)
-			{
-				$requete = oci_parse($connect, 'INSERT INTO Table(SELECT c.traduit FROM TermeVedette c WHERE nomTerme = :nom) Values ((SELECT REF(c2) FROM TermeVedette c2 WHERE c2.nomTerme = :nom2))');
-
-				oci_bind_by_name($requete, ':nom', $terme->getNomTerme());
-				oci_bind_by_name($requete, ':nom2', $value->getNomTerme());
-
-				$exe = oci_execute($requete);
-				if (!$exe)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-				}
-				
-			}
-		}
-		else
-		{
-			oci_free_statement($requete);
-			oci_close($connect);
-
-			throw new \Exception('Erreur : le TermeVedette n\'existe pas !')
-		}
-
-		oci_free_statement($requete);
-		oci_close($connect);
-	}
-
 	public function creer($terme)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -268,6 +151,73 @@ class CrudTermeVedette extends CrudTerme
 
 	public function supprimer($terme)
 	{
+		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
+		if (!$connect)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de connexion : '. $e['message']);
+		}
+
+		$objetTest = $this->getByName($terme->getNomTerme());
+		if ($objetTest != null)
+		{
+
+			oci_free_statement($requete);
+			oci_close($connect);
+			throw new \Exception('Erreur : Terme non existant !');
+			
+		}
+		else
+		{
+			foreach ($terme->getAssocie() as $t)
+			{
+				$t2 = $this->getByNom($t->getNomTerme())
+				$t2->removeAssocie($t);
+				if (get_class($c2) == 'Terme')
+					$this->update($t2);
+				else
+					$this->updateVedette($t2);
+			}
+
+			foreach ($terme->getTraduit() as $t)
+			{
+				$t2 = $this->getByNom($t->getNomTerme())
+				$t2->removeAssocie($t);
+				if (get_class($c2) == 'Terme')
+					$this->update($t2);
+				else
+					$this->updateVedette($t2);
+			}
+
+			foreach ($terme->getSynonymes() as $t)
+			{
+				$t2 = $this->getByNom($t->getNomTerme())
+				$t2->removeAssocie($t);
+				$this->updateVedette($t2);
+
+			}
+
+			$requeteDelete = oci_parse($connect, 'DELETE FROM TermeVedette WHERE nomTerme = :nomC');
+			ocibindbyname($requeteDelete, ':nomC', $concept->getNomConcept());
+			if (!$requeteDelete)			
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur de requête : '. $e['message']);
+			}
+
+			$exe = oci_execute($requeteDelete);
+
+			if (!$exe)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+			}
+			oci_free_statement($requete);
+			oci_free_statement($requeteDelete);
+			oci_free_statement($requeteSpecialise);
+			oci_free_statement($requeteGeneralise);
+			oci_close($connect);
+		}
 	}
 }
