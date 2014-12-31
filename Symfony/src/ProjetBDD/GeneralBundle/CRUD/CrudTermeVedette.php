@@ -104,6 +104,9 @@ class CrudTermeVedette extends CrudTerme
 
 	public function creer($terme)
 	{
+		$nomTerme = $terme->getNomTerme();
+		$descriptionTerme = $terme->getDescription();
+
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
 		if (!$connect)
@@ -117,8 +120,8 @@ class CrudTermeVedette extends CrudTerme
 		if $objetTest == null)
 		{
 			$requete = oci_parse($connect, 'INSERT INTO TermeVedette VALUES (:nom, :descT, tabTerme_t(), tabTerme_t(), TabTermeVedette_t())');
-			oci_bind_by_name($connect, ':nom', $terme->getNomTerme());
-			oci_bind_by_name($connect, ':descT', $terme->getDescription());
+			oci_bind_by_name($connect, ':nom', $nomTerme);
+			oci_bind_by_name($connect, ':descT', $descriptionTerme);
 			if (!$requete)
 			{
 				$e = oci_error();
@@ -172,7 +175,7 @@ class CrudTermeVedette extends CrudTerme
 		{
 			foreach ($terme->getAssocie() as $t)
 			{
-				$t2 = $this->getByNom($t->getNomTerme())
+				$t2 = $this->getByNom($t->getNomTerme());
 				$t2->removeAssocie($t);
 				if (get_class($c2) == 'Terme')
 					$this->update($t2);
@@ -182,7 +185,7 @@ class CrudTermeVedette extends CrudTerme
 
 			foreach ($terme->getTraduit() as $t)
 			{
-				$t2 = $this->getByNom($t->getNomTerme())
+				$t2 = $this->getByNom($t->getNomTerme());
 				$t2->removeAssocie($t);
 				if (get_class($c2) == 'Terme')
 					$this->update($t2);
@@ -192,7 +195,7 @@ class CrudTermeVedette extends CrudTerme
 
 			foreach ($terme->getSynonymes() as $t)
 			{
-				$t2 = $this->getByNom($t->getNomTerme())
+				$t2 = $this->getByNom($t->getNomTerme());
 				$t2->removeAssocie($t);
 				$this->updateVedette($t2);
 
