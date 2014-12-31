@@ -1,0 +1,89 @@
+{% extends '::layout.html.twig' %}
+
+{% block title %} Accueil {% endblock %}
+
+{% block corps %}
+
+{% if flash is defined %}
+	<div class="alert alert-{{typeFlash}}">
+		{{flash}}
+	</div>
+{% endif %}
+
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Concept : {{concept.nomConcept}}
+		</div>
+	</div>
+	<div class="panel-body">
+		<form type="form" action="{{path('ProjetBDDAdminBundleModificationConcept', {'nom' : concept.nomConcept})}}" method="post">
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input type="text" id="description" name="description" value="{{concept.description}}" class="form-control" />
+			</div>
+			<button type="submit" class="btn btn-success">Modifier</button>
+		</form>
+		{% for cc in concept.generalise %}
+			{{cc}}
+		{% endfor %}
+	</div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Généralise
+		</div>
+	</div>
+		<form type="form" action="{{path('ProjetBDDAdminBundleModificationConcept', {'nom' : concept.nomConcept})}}" method="post">
+		<input type="hidden" name="generaliseAction" />
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Nom concept</th>
+						<th>Généralise</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for c in tabConcept if c.nomConcept != concept.nomConcept %}
+						<tr>
+							<td>{{c.nomConcept}}</td>
+							<td><input type="checkbox" name="generalise[]" value="{{c.nomConcept}}" {% if c.nomConcept in concept.generalise %} checked {% endif %}></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class="panel-body">
+			<button type="submit" class="btn btn-success">Modifier</button>
+			</div>
+		</form>
+</div>
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Specialise
+		</div>
+	</div>
+	<form type="form" action="{{path('ProjetBDDAdminBundleModificationConcept', {'nom' : concept.nomConcept})}}" method="post">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Nom concept</th>
+						<th>Généralise</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for c in tabConcept if c.nomConcept != concept.nomConcept %}
+						<tr>
+							<td>{{c.nomConcept}}</td>
+							<td><input type="checkbox" name="specialise[]" value="{{c.nomConcept}}" {% if c.nomConcept in concept.specialise %} checked {% endif %}></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class="panel-body">
+			<button type="submit" class="btn btn-success">Modifier</button>
+			</div>
+		</form>
+</div>
+{% endblock %}

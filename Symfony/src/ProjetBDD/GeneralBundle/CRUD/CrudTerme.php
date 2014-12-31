@@ -617,7 +617,7 @@ class CrudTerme
 		{
 			foreach ($terme->getAssocie() as $t)
 			{
-				$t2 = $this->getByNom($t->getNomTerme())
+				$t2 = $this->getByNom($t->getNomTerme());
 				$t2->removeAssocie($t);
 				if (get_class($c2) == 'Terme')
 					$this->update($t2);
@@ -627,7 +627,7 @@ class CrudTerme
 
 			foreach ($terme->getTraduit() as $t)
 			{
-				$t2 = $this->getByNom($t->getNomTerme())
+				$t2 = $this->getByNom($t->getNomTerme());
 				$t2->removeAssocie($t);
 				if (get_class($c2) == 'Terme')
 					$this->update($t2);
@@ -637,7 +637,7 @@ class CrudTerme
 
 			foreach ($terme->getSynonymes() as $t)
 			{
-				$t2 = $this->getByNom($t->getNomTerme())
+				$t2 = $this->getByNom($t->getNomTerme());
 				$t2->removeAssocie($t);
 				$this->updateVedette($t2);
 
