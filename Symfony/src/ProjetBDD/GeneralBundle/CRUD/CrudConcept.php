@@ -7,34 +7,6 @@ use ProjetBDD\GeneralBundle\Entity\Concept;
 
 class CrudConcept
 {
-	public function getAll()
-	{
-		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
-
-
-		if (!$connect)
-		{
-			$e = oci_error();
-			throw new \Exception('Erreur de connexion : '. $e['message']);
-		}
-
-		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept');
-
-		$exe = oci_execute($requete);
-
-		$tabConcept = array();
-
-		while ($ligne = oci_fetch_array($requete, OCI_ASSOC))
-		{
-			$tabConcept[] = new Concept;
-			end($tabConcept)->setNomConcept($ligne['NOMCONCEPT']);
-			end($tabConcept)->setDescription($ligne['DESCRIPTION']);
-		}
-
-		return $tabConcept;
-
-	}
-
 	public function findByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -126,7 +98,7 @@ class CrudConcept
 		}
 
 		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept WHERE nomConcept = :nomC');
-		oci_bind_by_name($requete, ':nomC', $nom);
+		ocibindbyname($requete, ':nomC', $nom);
 
 		if (!$requete)
 		{
@@ -141,14 +113,13 @@ class CrudConcept
 			$e = oci_error();
 			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 		}
-		/*if (oci_num_rows($requete) == 0) {
+		if (oci_num_rows($requete) == 0) {
 
 			oci_free_statement($requete);
 			oci_close($connect);
 			return null;
-		}*/
-		/*else
-		{*/
+		}
+		else {
 			while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
 			{
 				$concept = new Concept;
@@ -166,7 +137,7 @@ class CrudConcept
 				}
 			
 				while (($ligneGeneralise = oci_fetch_array($requeteGeneralise, OCI_ASSOC))) {
-					$concept->addGeneralise($ligneGeneralise['NOM']);
+					$concept->addGeneralise($ligneGeneralise);
 				}
 				
 
@@ -182,23 +153,23 @@ class CrudConcept
 				}
 			
 				while (($ligneSpecialise = oci_fetch_array($requeteSpecialise, OCI_ASSOC))) {
-					$concept->addSpecialise($ligneSpecialise['NOM']);
+					$concept->addSpecialise($ligneSpecialise);
 				}	
 			}
 
 
 			oci_free_statement($requete);
+			oci_free_statement($requeteSpecialise);
+			oci_free_statement($requeteGeneralise);
 			oci_close($connect);
 
 			return $concept;
-		//}
+		}
 		
 	}
 
 	public function update($concept)
 	{
-		$nomConcept = $concept->getNomConcept();
-		$descriptionConcept = $concept->getDescription();
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
 		if (!$connect)
@@ -208,7 +179,7 @@ class CrudConcept
 		}
 		//On recupere le nom et description du concept
 		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept WHERE nomConcept = :nomC');
-		oci_bind_by_name($requete, ':nomC', $nomConcept);
+		ocibindbyname($requete, ':nomC', $concept->getNnomConcept());
 		if (!$requete)
 		{
 			$e = oci_error();
@@ -222,12 +193,12 @@ class CrudConcept
 			$e = oci_error();
 			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 		}
-		//if (oci_num_rows($requete) == 1) {
+		if (oci_num_rows($requete) == 1) {
 			//On met a jour le nom et la description
 			$ligne = oci_fetch_array($requete, OCI_ASSOC);
-			$requete = oci_parse($connect, 'UPDATE Concept SET nomConcept = :nomC, description = :descC WHERE nomConcept = :nomC');
-			oci_bind_by_name($requete, ':nomC', $nomConcept);
-			oci_bind_by_name($requete, ':descC', $descriptionConcept);
+			$requete = 'UPDATE Concept SET nomConcept = :nomC, description = :desc WHERE nomConcept = :nomC';
+			ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+			ocibindbyname($requete, ':descC', $concept->getDescription());
 			if (!$requete)
 			{
 				$e = oci_error();
@@ -245,7 +216,7 @@ class CrudConcept
 			//On vite les listes specialise et generalise
 			//On les re remplis avec le tableau de concept
 			$requete = oci_parse($connect, 'UPDATE Concept c SET c.generalise = TabConcept_t(), c.specialise = TabConcept_t() WHERE nomConcept = :nomC');
-			oci_bind_by_name($requete, ":nomC", $nomConcept);
+			ocibindbyname($requete, ":nomC", $concept->getNomConcept());
 			$exe = oci_execute($requete);
 			if (!$exe)
 			{
@@ -261,12 +232,12 @@ class CrudConcept
 													FROM Concept c 
 													WHERE nomConcept = :nomC) 
 												Values (
-													(SELECT REF(c2) 
+													SELECT REF(c2) 
 													FROM Concept c2 
-													WHERE c2.nomConcept = :nomC2)
+													WHERE c2.nomConcept = :nomC2
 														)');
-				oci_bind_by_name($requete, ':nomC', $nomConcept);
-				oci_bind_by_name($requete, ':nomC2', $value);
+				ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+				ocibindbyname($requete, ':nomC2', $value->getNomConcept());
 				$exe = oci_execute($requete);
 				if (!$exe)
 				{
@@ -283,13 +254,13 @@ class CrudConcept
 													SELECT c.generalise 
 													FROM Concept c 
 													WHERE nomConcept = :nomC) 
-												Values ((
+												Values (
 													SELECT REF(c2) 
 													FROM Concept c2 
-													WHERE c2.nomConcept = :nomC2)
+													WHERE c2.nomConcept = :nomC2
 														)');
-				oci_bind_by_name($requete, ':nomC', $nomConcept);
-				oci_bind_by_name($requete, ':nomC2', $value);
+				ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+				ocibindbyname($requete, ':nomC2', $value->getNomConcept());
 				$exe = oci_execute($requete);
 				if (!$exe)
 				{
@@ -298,23 +269,40 @@ class CrudConcept
 				}
 				
 			}
-		//}
+		}
 	}
+
 
 	public function creer($concept)
 	{
-		$nomConcept = $concept->getNomConcept();
-		$descriptionConcept = $concept->getDescription();
-
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
-		$objetTest = $this->getByNom($nomConcept);
-		
-		if ($objetTest == null) {
+		if (!$connect)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de connexion : '. $e['message']);
+		}
+
+		$requete = oci_parse($connect, 'SELECT nomConcept FROM Concept WHERE nomConcept = :nomC');
+		ocibindbyname($requete, ':nomC', $concept->nomConcept);
+		if (!$requete)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de requête : '. $e['message']);
+		}
+
+		$exe = oci_execute($requete);
+
+		if (!$exe)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+		}
+		if (oci_num_rows($requete) == 0) {
 			//Le concept existe pas, on insere
 			$requete = oci_parse($connect, 'INSERT INTO Concept VALUES (:nomC, :descC, tabConcept_t(), tabConcept_t());');
-			oci_bind_by_name($connect, ':nomC', $nomConcept);
-			oci_bind_by_name($connect, ':descC', $descriptionConcept);
+			ocibindbyname($connect, ':nomC', $concept->getNomConcept());
+			ocibindbyname($connect, ':descC', $concept->getDescription());
 			if (!$requete)
 			{
 				$e = oci_error();
@@ -334,13 +322,13 @@ class CrudConcept
 													SELECT c.generalise 
 													FROM Concept c 
 													WHERE nomConcept = :nomC) 
-												Values ((
+												Values (
 													SELECT REF(c2) 
 													FROM Concept c2 
-													WHERE c2.nomConcept = :nomC2)
+													WHERE c2.nomConcept = :nomC2
 														)');
-				oci_bind_by_name($requete, ':nomC', $nomConcept);
-				oci_bind_by_name($requete, ':nomC2', $value);
+				ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+				ocibindbyname($requete, ':nomC2', $value);
 				if (!$requete)
 				{
 					$e = oci_error();
@@ -361,13 +349,13 @@ class CrudConcept
 													SELECT c.specialise 
 													FROM Concept c 
 													WHERE nomConcept = :nomC) 
-												Values ((
+												Values (
 													SELECT REF(c2) 
 													FROM Concept c2 
-													WHERE c2.nomConcept = :nomC2)
+													WHERE c2.nomConcept = :nomC2
 														)');
-				oci_bind_by_name($requete, ':nomC', $nomConcept);
-				oci_bind_by_name($requete, ':nomC2', $value);
+				ocibindbyname($requete, ':nomC', $concept->getNomConcept());
+				ocibindbyname($requete, ':nomC2', $value);
 				if (!$requete)
 				{
 					$e = oci_error();
@@ -430,14 +418,14 @@ class CrudConcept
 			
 			foreach ($concept->getSpecialise as $c)
 			{
-				$c2 = $this->getByNom($c->getNomConcept());
+				$c2 = $this->getByNom($c->getNomConcept())
 				$c2->removeGeneralise($c);
 				$this->update($c2);
 			}
 
 			foreach ($concept->getGeneralise as $c)
 			{
-				$c2 = $this->getByNom($c->getNomConcept());
+				$c2 = $this->getByNom($c->getNomConcept())
 				$c2->removeSpecialise($c);
 				$this->update($c2);
 			}

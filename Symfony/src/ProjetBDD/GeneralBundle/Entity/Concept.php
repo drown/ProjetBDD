@@ -49,7 +49,7 @@ class Concept
 	{
 		// remove un élément du tableau.
 		foreach ($this->generalise as $i => $value) {
-			if ($value == $concept) {
+			if ($value->nomConcept == $concept->nomConcept) {
 				unset($this->generalise[$i]);
 				$this->generalise = array_values($this->generalise);
 			}
@@ -71,16 +71,10 @@ class Concept
 	{
 		// remove un élément du tableau.
 		foreach ($this->specialise as $i => $value) {
-			if ($value == $concept) {
+			if ($value->nomConcept == $concept->nomConcept) {
 				unset($this->specialise[$i]);
 				$this->specialise = array_values($this->specialise);
 			}
 		}
-	}
-
-	public function freeGeneralise()
-	{
-		unset($this->generalise);
-		$this->generalise = array();
 	}
 }

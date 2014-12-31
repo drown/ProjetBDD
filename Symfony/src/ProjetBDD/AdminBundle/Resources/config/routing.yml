@@ -1,11 +1,3 @@
-ProjetBDDAdminIndexConcept:
-    path:     /ProjetBDD/admin/indexConcept
-    defaults: { _controller: ProjetBDDAdminBundle:Default:indexConcept}
-
-ProjetBDDAdminBundleIndexTerme :
-    path : /ProjetBDD/admin/indexTerme
-    defaults : {_controller : ProjetBDDAdminBundle:Defaut:indexTerme}
-
-ProjetBDDAdminBundleModificationConcept :
-    path : /ProjetBDD/admin/modification/concept/{nom}
-    defaults : {_controller : ProjetBDDAdminBundle:Concept:modification}
+projet_bdd_admin_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: ProjetBDDAdminBundle:Default:index }

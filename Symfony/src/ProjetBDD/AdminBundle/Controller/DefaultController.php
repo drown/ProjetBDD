@@ -3,17 +3,11 @@
 namespace ProjetBDD\AdminBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use ProjetBDD\GeneralBundle\Entity\Concept;
-use ProjetBDD\GeneralBundle\Entity\TermeVedette;
 
 class DefaultController extends Controller
 {
-    public function indexConceptAction()
+    public function indexAction($name)
     {
-        $crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
-
-        $tabConcept = $crudConcept->getAll();
-
-        return $this->render('ProjetBDDAdminBundle:Default:indexConcept.html.twig', array('tabConcept' => $tabConcept));
+        return $this->render('ProjetBDDAdminBundle:Default:index.html.twig', array('name' => $name));
     }
 }
