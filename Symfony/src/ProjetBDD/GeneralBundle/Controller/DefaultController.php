@@ -58,7 +58,7 @@ class DefaultController extends Controller
     	if (isset($terme)) {
     		$tabAssoc = array();
     		$tabTraduit = array();
-    		$tabSynonymes = array();
+    		$tabSynonyme = array();
     		foreach ($terme->getAssocie() as $key => $value) {
     			$tabAssoc[] = $value;
     			$requete = oci_parse($connect, 'SELECT description FROM Terme WHERE nomTerme = :nomT');
@@ -99,16 +99,32 @@ class DefaultController extends Controller
 				}
     		}
 
-    		/* Synonymes, on va wait
-    		foreach ($terme->getAssocie as $key => $value) {
-    			# code...
-    		}*/
+    		foreach ($terme->getSynonyme() as $key => $value) {
+    			$tabSynonyme[] = $value;
+    			$requete = oci_parse($connect, 'SELECT description FROM TermeVedette WHERE nomTermeVedette = :nomT');
+    			oci_bind_by_name($requete, ':nomT', $value);
+
+				if (!$requete)
+				{
+					$e = oci_error();
+					throw new \Exception('Erreur de requête : '. $e['message']);
+				}
+
+				$exe = oci_execute($requete);
+
+				while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
+				{	
+					//Normalement qu'1 mais bon..
+					$tabSynonyme[] = $ligne['DESCRIPTION'];
+				}
+    		}
 
     		//Il manque synonymes.
     		return $this->render('ProjetBDDGeneralBundle:Default:affiche.html.twig', array('nomTerme' => $terme->getNomTerme(),
     																						'descTerme' => $terme->getDescrition(),
     																						'tabAssoc' => $tabAssoc,
-    																						'tabTraduit' => $tabTraduit);
+    																						'tabTraduit' => $tabTraduit,
+    																						'tabSynonyme'=> $tabSynonyme);
     		oci_free_statement($requete);
     	}
     	else {
@@ -132,7 +148,7 @@ class DefaultController extends Controller
 				throw new \Exception('Erreur de connexion : '. $e['message']);
 			}
 
-			$requete = oci_parse($connect, 'SELECT nomTerme, description FROM TermeVedette t WHERE DEREF(concept).nomConcept = :nomC');
+			$requete = oci_parse($connect, 'SELECT nomTerme, description FROM TermeVedette t WHERE DEREF(concept).nomConcept = :nomC ');
 			oci_bind_by_name($requete, ':nomC', $concept->getNomConcept());
 
 			if (!$requete)
@@ -200,11 +216,27 @@ class DefaultController extends Controller
 					$tabTraduit[] = $ligneAssoc['DESCRIPTION'];
 				}
 
-				//synonymes.. On va attendre 
+				$tabSynonyme = array();
+				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme, description FROM Terme WHERE DEREF(VALUE(synonyme)).nomTerme = :nomT');
+				oci_bind_by_name($requeteAssoc, ':nomT', $nomTermeVedette);
+				if (!$requeteAssoc)
+				{
+					$e = oci_error();
+					throw new \Exception('Erreur de requête : '. $e['message']);
+				}
 
+				$exe = oci_execute($requeteAssoc);
 
-				
-				
+				if (!$exe)
+				{
+					$e = oci_error();
+					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+				}
+				while (($ligneAssoc = oci_fetch_array($requeteAssoc, OCI_ASSOC)))
+				{
+					$tabSynonyme[] = $ligneAssoc['NOMTERME'];
+					$tabSynonyme[] = $ligneAssoc['DESCRIPTION'];
+				}	
 			}
 			oci_free_statement($requeteAssoc);
 			oci_close($connect);
@@ -214,7 +246,8 @@ class DefaultController extends Controller
 																							'nomTermeVedette' => $nomTermeVedette,
 																							'descTermeVedette' => $descTermeVedette,
 																							'tabAssocie' => $tabAssocie,
-																							'tabTraduit' => $tabTraduit);
+																							'tabTraduit' => $tabTraduit,
+																							'tabSynonyme' => $tabSynonyme);
 
 
     	} else {
