@@ -8,7 +8,7 @@ use ProjetBDD\Generalbundle\CRUD\CrudConcept;
 
 class CrudTerme
 {
-	public function findByNom($nom);
+	public function findByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
