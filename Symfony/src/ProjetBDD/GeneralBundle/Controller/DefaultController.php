@@ -32,15 +32,14 @@ class DefaultController extends Controller
     		$tabConcept = $crudConcept->findByNom($nom);
     		$tabTerme = $crudTerme->findByNom($nom);
     		//Ils peuvent etre vide, si oui erreur
-    		if (count($tabConcept) > 0 || count($tabTerme) > 0) {
+    		if ( (count($tabConcept) > 0) || (count($tabTerme) > 0) ) {
     			return $this->render('ProjetBDDGeneralBundle:Default:recherche.html.twig', array('tabConcept' => $tabConcept, 'tabTerme' => $tabTerme));
     		} else {
-    			return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun concept/terme correspond à votre recherche');
+    			return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun concept/terme correspond à votre recherche'));
     		}
-    		
     	}
     	else {
-    		return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun concept/terme correspond à votre recherche');
+    		return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun concept/terme correspond à votre recherche'));
     	}
     }
 
@@ -124,11 +123,11 @@ class DefaultController extends Controller
     																						'descTerme' => $terme->getDescrition(),
     																						'tabAssoc' => $tabAssoc,
     																						'tabTraduit' => $tabTraduit,
-    																						'tabSynonyme'=> $tabSynonyme);
+    																						'tabSynonyme'=> $tabSynonyme));
     		oci_free_statement($requete);
     	}
     	else {
-    		return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun terme correspond à votre recherche');
+    		return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun terme correspond à votre recherche'));
     	}
 
     	oci_close($connect);
@@ -247,11 +246,11 @@ class DefaultController extends Controller
 																							'descTermeVedette' => $descTermeVedette,
 																							'tabAssocie' => $tabAssocie,
 																							'tabTraduit' => $tabTraduit,
-																							'tabSynonyme' => $tabSynonyme);
+																							'tabSynonyme' => $tabSynonyme));
 
 
     	} else {
-    		return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun concept correspond à votre recherche');
+    		return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun concept correspond à votre recherche'));
     	}
     }	
 }
