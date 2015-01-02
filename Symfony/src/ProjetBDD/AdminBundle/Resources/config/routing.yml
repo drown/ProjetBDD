@@ -2,10 +2,6 @@ ProjetBDDAdminIndexConcept:
     path:     /ProjetBDD/admin/indexConcept
     defaults: { _controller: ProjetBDDAdminBundle:Default:indexConcept}
 
-ProjetBDDAdminBundleIndexTerme :
-    path : /ProjetBDD/admin/indexTerme
-    defaults : {_controller : ProjetBDDAdminBundle:Defaut:indexTerme}
-
 ProjetBDDAdminBundleCreationConcept :
     path : /ProjetBDD/admin/creation/concept/
     defaults : {_controller : ProjetBDDAdminBundle:Concept:creer}
@@ -17,3 +13,21 @@ ProjetBDDAdminBundleModificationConcept :
 ProjetBDDAdminBundleSuppressionConcept :
     path : /ProjetBDD/admin/suppression/concept/{nom}
     defaults : {_controller : ProjetBDDAdminBundle:Concept:supprimer}
+
+# routing des termes :
+
+ProjetBDDAdminIndexTerme:
+    path:     /ProjetBDD/admin/indexTerme
+    defaults: { _controller: ProjetBDDAdminBundle:Default:indexTerme}
+
+ProjetBDDAdminBundleCreationTerme :
+    path : /ProjetBDD/admin/creation/terme
+    defaults : {_controller : ProjetBDDAdminBundle:Terme:creer}
+
+ProjetBDDAdminBundleModificationTerme :
+    path : /ProjetBDD/admin/modification/terme/{nom}
+    defaults : {_controller : ProjetBDDAdminBundle:Terme:modification}
+
+ProjetBDDAdminBundleSuppressionTerme :
+    path : /ProjetBDD/admin/suppression/terme/{nom}
+    defaults : {_controller : ProjetBDDAdminBundle:Terme:supprimer}

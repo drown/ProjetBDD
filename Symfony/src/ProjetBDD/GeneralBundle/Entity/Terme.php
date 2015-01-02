@@ -99,4 +99,22 @@ class Terme
 			}
 		}
 	}
+
+	public function freeAssocie()
+	{
+		unset($this->associe);
+		$this->associe = array();
+	}
+
+	public function freeTraduit()
+	{
+		unset($this->traduit);
+		$this->traduit = array();
+	}
+
+	public function freeSynonymes()
+	{
+		unset($this->synonymes);
+		$this->synonymes = array();
+	}
 }

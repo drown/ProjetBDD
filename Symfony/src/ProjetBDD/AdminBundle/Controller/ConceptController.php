@@ -45,9 +45,11 @@ class ConceptController extends Controller
     public function modificationAction($nom)
     {
         $crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
+        $crudTermeVedette = $this->container->get('ProjetBDD.CRUD.TermeVedette');
         $request = $this->getRequest();
 
         $concept = $crudConcept->getByNom($nom);
+        $termeVedette = $crudTermeVedette->getByConcept($concept);
         $tabConcept = $crudConcept->getAll();
 
         if ($request->getMethod() == 'POST')
@@ -58,7 +60,7 @@ class ConceptController extends Controller
 
         		$crudConcept->update($concept);
 
-        		return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
+        		return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'termeVedette' => $termeVedette, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
         	}
         	elseif (isset($_POST['generaliseAction']))
         	{
@@ -70,7 +72,7 @@ class ConceptController extends Controller
         	}
         }
 
-       	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'tabConcept' => $tabConcept));
+       	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'tabConcept' => $tabConcept, 'termeVedette' => $termeVedette));
     }
 
     public function modifierGeneralise($request, $concept, $crudConcept, $tabConcept)
@@ -104,7 +106,7 @@ class ConceptController extends Controller
 
     	$crudConcept->update($concept);
 
-    	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
+    	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'termeVedette' => $termeVedette, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
     public function modifierSpecialise($request, $concept, $crudConcept, $tabConcept)
@@ -138,7 +140,7 @@ class ConceptController extends Controller
 
         $crudConcept->update($concept);
 
-        return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
+        return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'termeVedette' => $termeVedette, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
     public function supprimerAction($nom)

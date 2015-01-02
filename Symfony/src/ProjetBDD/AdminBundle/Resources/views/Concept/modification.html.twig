@@ -17,6 +17,9 @@
 		</div>
 	</div>
 	<div class="panel-body">
+		<p>
+			<a href="{{path('ProjetBDDAdminBundleModificationTerme', {'nom' : termeVedette.nomTerme})}}">Modifier Terme Vedette</a>
+		</p>
 		<form type="form" action="{{path('ProjetBDDAdminBundleModificationConcept', {'nom' : concept.nomConcept})}}" method="post">
 			<div class="form-group">
 				<label for="description">Description</label>
@@ -24,9 +27,6 @@
 			</div>
 			<button type="submit" class="btn btn-success">Modifier</button>
 		</form>
-		{% for cc in concept.generalise %}
-			{{cc}}
-		{% endfor %}
 	</div>
 </div>
 <div class="panel panel-success">

@@ -7,6 +7,35 @@ use ProjetBDD\GeneralBundle\Entity\TermeVedette;
 
 class CrudTermeVedette extends CrudTerme
 {
+	public function getAll()
+	{
+		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
+
+
+		if (!$connect)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de connexion : '. $e['message']);
+		}
+
+		$requete = oci_parse($connect, 'SELECT nomTerme, description, DEREF(concept).nomConcept AS nomC FROM TermeVedette');
+
+		$exe = oci_execute($requete);
+
+		$tabTerme = array();
+
+		while ($ligne = oci_fetch_array($requete, OCI_ASSOC))
+		{
+			$tabTerme[] = new TermeVedette;
+			end($tabTerme)->setNomTerme($ligne['NOMTERME']);
+			end($tabTerme)->setDescription($ligne['DESCRIPTION']);
+			end($tabTerme)->setConcept($ligne['NOMC']);
+		}
+
+		return $tabTerme;
+
+	}
+
 	public function getByConcept($concept)
 	{
 		$nomConcept = $concept->getNomConcept();
@@ -145,79 +174,6 @@ class CrudTermeVedette extends CrudTerme
 
 			throw new \Exception('Terme ou TermeVedette déjà existant');
 			
-		}
-
-
-	}
-
-	public function supprimer($terme)
-	{
-		$nomTerme = $terme->getNomTerme();
-
-		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
-
-		if (!$connect)
-		{
-			$e = oci_error();
-			throw new \Exception('Erreur de connexion : '. $e['message']);
-		}
-
-		$objetTest = $this->getByNom($terme->getNomTerme());
-		if ($objetTest != null)
-		{
-
-			oci_free_statement($requete);
-			oci_close($connect);
-			throw new \Exception('Erreur : Terme non existant !');
-			
-		}
-		else
-		{
-			foreach ($terme->getAssocie() as $t)
-			{
-				$t2 = $this->getByNom($t->getNomTerme());
-				$t2->removeAssocie($t);
-				if (get_class($c2) == 'Terme')
-					$this->update($t2);
-				else
-					$this->updateVedette($t2);
-			}
-
-			foreach ($terme->getTraduit() as $t)
-			{
-				$t2 = $this->getByNom($t->getNomTerme());
-				$t2->removeTraduit($t);
-				if (get_class($c2) == 'Terme')
-					$this->update($t2);
-				else
-					$this->updateVedette($t2);
-			}
-
-			foreach ($terme->getSynonymes() as $t)
-			{
-				$t2 = $this->getByNom($t->getNomTerme());
-				$t2->removeSynonymes($t);
-				$this->updateVedette($t2);
-
-			}
-
-			$requeteDelete = oci_parse($connect, 'DELETE FROM TermeVedette WHERE nomTerme = :nomC');
-			oci_bind_by_name($requeteDelete, ':nomC', $nomTerme);
-			if (!$requeteDelete)			
-			{
-				$e = oci_error();
-				throw new \Exception('Erreur de requête : '. $e['message']);
-			}
-
-			$exe = oci_execute($requeteDelete);
-
-			if (!$exe)
-			{
-				$e = oci_error();
-				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-			}
-			oci_free_statement($requeteDelete);
-			oci_close($connect);
 		}
 	}
 }

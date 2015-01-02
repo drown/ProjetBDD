@@ -16,4 +16,13 @@ class DefaultController extends Controller
 
         return $this->render('ProjetBDDAdminBundle:Default:indexConcept.html.twig', array('tabConcept' => $tabConcept));
     }
+
+    public function indexTermeAction()
+    {
+        $crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
+
+        $tabTerme = $crudTerme->getAll();
+
+        return $this->render('ProjetBDDAdminBundle:Default:indexTerme.html.twig', array('tabTerme' => $tabTerme));
+    }
 }

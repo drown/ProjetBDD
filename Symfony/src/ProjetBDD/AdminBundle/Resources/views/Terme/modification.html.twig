@@ -1,0 +1,116 @@
+{% extends '::layout.html.twig' %}
+
+{% block title %} Accueil {% endblock %}
+
+{% block corps %}
+
+{% if flash is defined %}
+	<div class="alert alert-{{typeFlash}}">
+		{{flash}}
+	</div>
+{% endif %}
+
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Terme : {{terme.nomTerme}}
+		</div>
+	</div>
+	<div class="panel-body">
+		<form type="form" action="{{path('ProjetBDDAdminBundleModificationTerme', {'nom' : terme.nomTerme})}}" method="post">
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input type="text" id="description" name="description" value="{{terme.description}}" class="form-control" />
+			</div>
+			<button type="submit" class="btn btn-success">Modifier</button>
+		</form>
+	</div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Association
+		</div>
+	</div>
+		<form type="form" action="{{path('ProjetBDDAdminBundleModificationTerme', {'nom' : terme.nomTerme})}}" method="post">
+			<input type="hidden" name="associeAction" />
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Nom Terme</th>
+						<th>Associe</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for c in tabTerme if c.nomTerme != terme.nomTerme %}
+						<tr>
+							<td>{{c.nomTerme}}</td>
+							<td><input type="checkbox" name="associe[]" value="{{c.nomTerme}}" {% if c.nomTerme in terme.associe %} checked {% endif %}></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class="panel-body">
+			<button type="submit" class="btn btn-success">Modifier</button>
+			</div>
+		</form>
+</div>
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Traduction
+		</div>
+	</div>
+	<form type="form" action="{{path('ProjetBDDAdminBundleModificationTerme', {'nom' : terme.nomTerme})}}" method="post">
+		<input type="hidden" name="traduitAction" />
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Nom concept</th>
+						<th>Généralise</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for c in tabTerme if c.nomTerme != terme.nomTerme %}
+						<tr>
+							<td>{{c.nomTerme}}</td>
+							<td><input type="checkbox" name="traduit[]" value="{{c.nomTerme}}" {% if c.nomTerme in terme.traduit %} checked {% endif %}></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class="panel-body">
+			<button type="submit" class="btn btn-success">Modifier</button>
+			</div>
+		</form>
+</div>
+<div class="panel panel-danger">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Terme vedette synonyme
+		</div>
+	</div>
+	<form type="form" action="{{path('ProjetBDDAdminBundleModificationTerme', {'nom' : terme.nomTerme})}}" method="post">
+		<input type="hidden" name="synonymesAction" />
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Nom concept</th>
+						<th>Généralise</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for c in tabTermeV if c.nomTerme != terme.nomTerme %}
+						<tr>
+							<td>{{c.nomTerme}}</td>
+							<td><input type="checkbox" name="synonymes[]" value="{{c.nomTerme}}" {% if c.nomTerme in terme.synonymes %} checked {% endif %}></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class="panel-body">
+			<button type="submit" class="btn btn-success">Modifier</button>
+			</div>
+		</form>
+</div>
+{% endblock %}

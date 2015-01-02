@@ -192,9 +192,7 @@ class CrudConcept
 			oci_free_statement($requete);
 			oci_close($connect);
 
-			return $concept;
-		//}
-		
+			return $concept;		
 	}
 
 	public function update($concept)
@@ -433,15 +431,15 @@ class CrudConcept
 			
 			foreach ($concept->getSpecialise() as $c)
 			{
-				$c2 = $this->getByNom($c->getNomConcept());
-				$c2->removeGeneralise($c);
+				$c2 = $this->getByNom($c);
+				$c2->removeGeneralise($concept->getNomConcept());
 				$this->update($c2);
 			}
 
 			foreach ($concept->getGeneralise() as $c)
 			{
-				$c2 = $this->getByNom($c->getNomConcept());
-				$c2->removeSpecialise($c);
+				$c2 = $this->getByNom($c);
+				$c2->removeSpecialise($concept->getNomConcept());
 				$this->update($c2);
 			}
 

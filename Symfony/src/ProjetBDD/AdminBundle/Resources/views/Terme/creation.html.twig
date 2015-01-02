@@ -1,0 +1,33 @@
+{% extends '::layout.html.twig' %}
+
+{% block title %} Accueil {% endblock %}
+
+{% block corps %}
+
+{% if flash is defined %}
+	<div class="alert alert-{{typeFlash}}">
+		{{flash}}
+	</div>
+{% endif %}
+
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Création de concept
+		</div>
+	</div>
+	<div class="panel-body">
+		<form type="form" method="post" action="{{path('ProjetBDDAdminBundleCreationTerme')}}">
+			<div class="form-group">
+				<label for="nomConcept">Nom terme :</label>
+				<input type="text" name="nomTerme" id="nomTerme" class="form-control" />
+			</div>
+			<div class="form-group">
+				<label for="description">Description :</label>
+				<input type="text" name="description" id="description" class="form-control" />
+			</div>
+			<button type="submit" class="btn btn-success">Creer</button>
+		</form>
+	</div>
+</div>
+{% endblock %}

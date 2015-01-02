@@ -1,0 +1,30 @@
+{% extends '::layout.html.twig' %}
+
+{% block title %} Accueil {% endblock %}
+
+{% block corps %}
+
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Nom Concept</th>
+					<th>Decription</th>
+					<th>Option</th>
+					<th>Supprimer</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for terme in tabTerme %}
+					<tr>
+						<td>{{terme.nomTerme}}</td>
+						<td>{{terme.description}}</td>
+						<td><a href="{{path('ProjetBDDAdminBundleModificationTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></a></td>
+						<td><a href="{{path('ProjetBDDAdminBundleSuppressionTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></a></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+{% endblock %}
