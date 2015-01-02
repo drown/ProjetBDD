@@ -20,7 +20,7 @@
 						<td>{{concept.nomConcept}}</td>
 						<td>{{concept.description}}</td>
 						<td><a href="{{path('ProjetBDDAdminBundleModificationConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></a></td>
-						<td><a href="{{path('ProjetBDDAdminBundleModificationConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></a></td>
+						<td><a href="{{path('ProjetBDDAdminBundleSuppressionConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></a></td>
 					</tr>
 				{% endfor %}
 			</tbody>

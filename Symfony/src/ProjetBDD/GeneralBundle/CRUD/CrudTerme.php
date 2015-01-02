@@ -2,7 +2,7 @@
 
 namespace ProjetBDD\Generalbundle\CRUD;
 
-use ProjetBDD\GeneralBundle\Entity\Terme;
+use ProjetBDD\GeneralBundle\Entity\TermeVedette;
 use ProjetBDD\Generalbundle\CRUD\CrudConcept;
 
 
@@ -105,7 +105,7 @@ class CrudTerme
 			return $tabTerme;
 	}
 
-	public function getByNom($nom);
+	public function getByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
@@ -200,7 +200,7 @@ class CrudTerme
 		
 	}
 
-	public function getVedetteByNom($nom);
+	public function getVedetteByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
@@ -210,7 +210,7 @@ class CrudTerme
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		$requete = oci_parse($connect, 'SELECT nomTerme, description, DEREF(VALUE(concept)).nomConcept AS nomConcept FROM TermeVedette WHERE nomTerme = :nomC');
+		$requete = oci_parse($connect, 'SELECT nomTerme, description, DEREF(concept).nomConcept AS nomConcept FROM TermeVedette WHERE nomTerme = :nomC');
 		oci_bind_by_name($requete, ':nomC', $nom);
 
 		if (!$requete)
@@ -408,7 +408,7 @@ class CrudTerme
 			oci_free_statement($requete);
 			oci_close($connect);
 
-			throw new \Exception('Erreur : le Terme n\'existe pas !')
+			throw new \Exception('Erreur : le Terme n\'existe pas !');
 		}
 
 		oci_free_statement($requete);
@@ -526,7 +526,7 @@ class CrudTerme
 			oci_free_statement($requete);
 			oci_close($connect);
 
-			throw new \Exception('Erreur : le TermeVedette n\'existe pas !')
+			throw new \Exception('Erreur : le TermeVedette n\'existe pas !');
 		}
 
 		oci_free_statement($requete);
@@ -545,7 +545,7 @@ class CrudTerme
 
 		$objetTest = $this->getByNom($terme->getNomTerme());
 
-		if $objetTest == null)
+		if ($objetTest == null)
 		{
 			$requete = oci_parse($connect, 'INSERT INTO Terme VALUES (:nom, :descT, tabTerme_t(), tabTerme_t(), TabTermeVedette_t())');
 			oci_bind_by_name($connect, ':nom', $terme->getNomTerme());
@@ -628,7 +628,7 @@ class CrudTerme
 			foreach ($terme->getTraduit() as $t)
 			{
 				$t2 = $this->getByNom($t->getNomTerme());
-				$t2->removeAssocie($t);
+				$t2->removetraduit($t);
 				if (get_class($c2) == 'Terme')
 					$this->update($t2);
 				else
@@ -638,7 +638,7 @@ class CrudTerme
 			foreach ($terme->getSynonymes() as $t)
 			{
 				$t2 = $this->getByNom($t->getNomTerme());
-				$t2->removeAssocie($t);
+				$t2->removeSynonymes($t);
 				$this->updateVedette($t2);
 
 			}

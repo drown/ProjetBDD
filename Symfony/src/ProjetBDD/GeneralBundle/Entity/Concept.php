@@ -83,4 +83,10 @@ class Concept
 		unset($this->generalise);
 		$this->generalise = array();
 	}
+
+	public function freeSpecialise()
+	{
+		unset($this->specialise);
+		$this->specialise = array();
+	}
 }

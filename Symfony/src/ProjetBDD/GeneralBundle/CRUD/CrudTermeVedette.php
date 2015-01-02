@@ -3,11 +3,14 @@
 namespace ProjetBDD\Generalbundle\CRUD;
 
 use ProjetBDD\Generalbundle\CRUD\CrudTerme;
+use ProjetBDD\GeneralBundle\Entity\TermeVedette;
 
 class CrudTermeVedette extends CrudTerme
 {
-	public function getByConcept($terme)
+	public function getByConcept($concept)
 	{
+		$nomConcept = $concept->getNomConcept();
+
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
 		if (!$connect)
@@ -16,8 +19,8 @@ class CrudTermeVedette extends CrudTerme
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		$requete = oci_parse($connect, 'SELECT nomTerme, description FROM TermeVedette WHERE DEREF(VALUE(concept)).nomConcept = :nomC');
-		oci_bind_by_name($requete, ':nomC', $terme->getNomConcept());
+		$requete = oci_parse($connect, 'SELECT nomTerme, description FROM TermeVedette WHERE DEREF(concept).nomConcept = :nomC');
+		oci_bind_by_name($requete, ':nomC', $nomConcept);
 
 		if (!$requete)
 		{
@@ -32,14 +35,9 @@ class CrudTermeVedette extends CrudTerme
 			$e = oci_error();
 			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 		}
-		if (oci_num_rows($requete) == 0) {
 
-			oci_free_statement($requete);
-			oci_close($connect);
-			return null;
-		}
-		else
-		{
+		$terme = null;
+
 			while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
 			{
 				$terme = new TermeVedette;
@@ -88,8 +86,6 @@ class CrudTermeVedette extends CrudTerme
 		
 				while (($ligneSynonymes = oci_fetch_array($requeteSynonymes, OCI_ASSOC)))
 					$terme->addSynonymes($ligneSynonymes['NOM']);		
-			}
-
 
 			oci_free_statement($requete);
 			oci_free_statement($requeteTraduit);
@@ -106,6 +102,7 @@ class CrudTermeVedette extends CrudTerme
 	{
 		$nomTerme = $terme->getNomTerme();
 		$descriptionTerme = $terme->getDescription();
+		$concept = $terme->getConcept()->getNomConcept();
 
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
@@ -117,11 +114,12 @@ class CrudTermeVedette extends CrudTerme
 
 		$objetTest = $this->getByNom($terme->getNomTerme());
 
-		if $objetTest == null)
+		if ($objetTest == null)
 		{
-			$requete = oci_parse($connect, 'INSERT INTO TermeVedette VALUES (:nom, :descT, tabTerme_t(), tabTerme_t(), TabTermeVedette_t())');
-			oci_bind_by_name($connect, ':nom', $nomTerme);
-			oci_bind_by_name($connect, ':descT', $descriptionTerme);
+			$requete = oci_parse($connect, 'INSERT INTO TermeVedette VALUES (:nom, :descT, tabTerme_t(), tabTerme_t(), TabTermeVedette_t(), (SELECT REF(c) FROM Concept c WHERE c.nomConcept = :nomC))');
+			oci_bind_by_name($requete, ':nom', $nomTerme);
+			oci_bind_by_name($requete, ':descT', $descriptionTerme);
+			oci_bind_by_name($requete, ':nomC', $concept);
 			if (!$requete)
 			{
 				$e = oci_error();
@@ -154,6 +152,8 @@ class CrudTermeVedette extends CrudTerme
 
 	public function supprimer($terme)
 	{
+		$nomTerme = $terme->getNomTerme();
+
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
 		if (!$connect)
@@ -162,7 +162,7 @@ class CrudTermeVedette extends CrudTerme
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		$objetTest = $this->getByName($terme->getNomTerme());
+		$objetTest = $this->getByNom($terme->getNomTerme());
 		if ($objetTest != null)
 		{
 
@@ -186,7 +186,7 @@ class CrudTermeVedette extends CrudTerme
 			foreach ($terme->getTraduit() as $t)
 			{
 				$t2 = $this->getByNom($t->getNomTerme());
-				$t2->removeAssocie($t);
+				$t2->removeTraduit($t);
 				if (get_class($c2) == 'Terme')
 					$this->update($t2);
 				else
@@ -196,13 +196,13 @@ class CrudTermeVedette extends CrudTerme
 			foreach ($terme->getSynonymes() as $t)
 			{
 				$t2 = $this->getByNom($t->getNomTerme());
-				$t2->removeAssocie($t);
+				$t2->removeSynonymes($t);
 				$this->updateVedette($t2);
 
 			}
 
 			$requeteDelete = oci_parse($connect, 'DELETE FROM TermeVedette WHERE nomTerme = :nomC');
-			ocibindbyname($requeteDelete, ':nomC', $concept->getNomConcept());
+			oci_bind_by_name($requeteDelete, ':nomC', $nomTerme);
 			if (!$requeteDelete)			
 			{
 				$e = oci_error();
@@ -216,10 +216,7 @@ class CrudTermeVedette extends CrudTerme
 				$e = oci_error();
 				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 			}
-			oci_free_statement($requete);
 			oci_free_statement($requeteDelete);
-			oci_free_statement($requeteSpecialise);
-			oci_free_statement($requeteGeneralise);
 			oci_close($connect);
 		}
 	}

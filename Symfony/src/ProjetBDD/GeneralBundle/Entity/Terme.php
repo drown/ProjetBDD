@@ -1,6 +1,6 @@
 <?php
 
-namespace ProjetBDD\GeneralBundle\Entity
+namespace ProjetBDD\GeneralBundle\Entity;
 
 class Terme
 {
@@ -51,7 +51,7 @@ class Terme
 	{
 		// remove un élément du tableau.
 		foreach ($this->associe as $i => $value) {
-			if ($value->nomTerme == $associe->nomTerme) {
+			if ($value == $associe) {
 				unset($this->associe[$i]);
 				$this->associe = array_values($this->associe);
 			}
@@ -72,7 +72,7 @@ class Terme
 	{
 		// remove un élément du tableau.
 		foreach ($this->traduit as $i => $value) {
-			if ($value->nomTerme == $terme->nomTerme) {
+			if ($value == $terme) {
 				unset($this->traduit[$i]);
 				$this->traduit = array_values($this->traduit);
 			}
@@ -93,7 +93,7 @@ class Terme
 	{
 		// remove un élément du tableau.
 		foreach ($this->synonymes as $i => $value) {
-			if ($value->nomTerme == $terme->nomTerme) {
+			if ($value == $terme) {
 				unset($this->synonymes[$i]);
 				$this->synonymes = array_values($this->synonymes);
 			}

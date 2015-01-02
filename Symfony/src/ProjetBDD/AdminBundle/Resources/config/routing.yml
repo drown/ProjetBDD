@@ -6,6 +6,14 @@ ProjetBDDAdminBundleIndexTerme :
     path : /ProjetBDD/admin/indexTerme
     defaults : {_controller : ProjetBDDAdminBundle:Defaut:indexTerme}
 
+ProjetBDDAdminBundleCreationConcept :
+    path : /ProjetBDD/admin/creation/concept/
+    defaults : {_controller : ProjetBDDAdminBundle:Concept:creer}
+
 ProjetBDDAdminBundleModificationConcept :
     path : /ProjetBDD/admin/modification/concept/{nom}
     defaults : {_controller : ProjetBDDAdminBundle:Concept:modification}
+
+ProjetBDDAdminBundleSuppressionConcept :
+    path : /ProjetBDD/admin/suppression/concept/{nom}
+    defaults : {_controller : ProjetBDDAdminBundle:Concept:supprimer}

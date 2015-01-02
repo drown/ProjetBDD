@@ -149,6 +149,8 @@ class CrudConcept
 		}*/
 		/*else
 		{*/
+			$concept = null;
+
 			while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
 			{
 				$concept = new Concept;
@@ -308,13 +310,21 @@ class CrudConcept
 
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
+		if (!$connect)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de connexion : '. $e['message']);
+		}
+
 		$objetTest = $this->getByNom($nomConcept);
 		
-		if ($objetTest == null) {
+		if ($objetTest == null)
+		{
 			//Le concept existe pas, on insere
-			$requete = oci_parse($connect, 'INSERT INTO Concept VALUES (:nomC, :descC, tabConcept_t(), tabConcept_t());');
-			oci_bind_by_name($connect, ':nomC', $nomConcept);
-			oci_bind_by_name($connect, ':descC', $descriptionConcept);
+			$requete = oci_parse($connect, 'INSERT INTO Concept VALUES (:nomC, :descC, tabConcept_t(), tabConcept_t())');
+			oci_bind_by_name($requete, ':nomC', $nomConcept);
+			oci_bind_by_name($requete, ':descC', $descriptionConcept);
+
 			if (!$requete)
 			{
 				$e = oci_error();
@@ -392,6 +402,8 @@ class CrudConcept
 
 	public function supprimer($concept)
 	{
+		$nomConcept = $concept->getNomConcept();
+
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
 		if (!$connect)
@@ -401,7 +413,7 @@ class CrudConcept
 		}
 
 		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept WHERE nomConcept = :nomC');
-		oci_bind_by_name($requete, ':nomC', $concept->getNomConcept());
+		oci_bind_by_name($requete, ':nomC', $nomConcept);
 
 		if (!$requete)
 		{
@@ -417,25 +429,16 @@ class CrudConcept
 			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 		}
 
-		if (oci_num_rows($requete) == 0) {
-
-			oci_free_statement($requete);
-			oci_close($connect);
-			return NULL;
-		}
-		else
-		{
-
 			//mise a jour des ref dans tout les autres concept... RELOU!
 			
-			foreach ($concept->getSpecialise as $c)
+			foreach ($concept->getSpecialise() as $c)
 			{
 				$c2 = $this->getByNom($c->getNomConcept());
 				$c2->removeGeneralise($c);
 				$this->update($c2);
 			}
 
-			foreach ($concept->getGeneralise as $c)
+			foreach ($concept->getGeneralise() as $c)
 			{
 				$c2 = $this->getByNom($c->getNomConcept());
 				$c2->removeSpecialise($c);
@@ -446,7 +449,7 @@ class CrudConcept
 
 			//Suppresion
 			$requeteDelete = oci_parse($connect, 'DELETE FROM Concept WHERE nomConcept = :nomC');
-			oci_bind_by_name($requeteDelete, ':nomC', $concept->getNomConcept());
+			oci_bind_by_name($requeteDelete, ':nomC', $nomConcept);
 			if (!$requeteDelete)			
 			{
 				$e = oci_error();
@@ -462,9 +465,6 @@ class CrudConcept
 			}
 			oci_free_statement($requete);
 			oci_free_statement($requeteDelete);
-			oci_free_statement($requeteSpecialise);
-			oci_free_statement($requeteGeneralise);
 			oci_close($connect);
 		}
-	}
 }

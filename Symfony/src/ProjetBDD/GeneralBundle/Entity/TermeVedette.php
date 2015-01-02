@@ -1,6 +1,6 @@
 <?php
 
-namespace ProjetBDD\GeneralBundle\Entity
+namespace ProjetBDD\GeneralBundle\Entity;
 
 use ProjetBDD\GeneralBundle\Entity\Terme;
 
