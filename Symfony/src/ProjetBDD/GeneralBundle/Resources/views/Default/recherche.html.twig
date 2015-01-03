@@ -1,0 +1,42 @@
+{% extends '::layout.html.twig' %}
+
+{% block title %} Accueil {% endblock %}
+
+{% block corps %}
+
+<h1>Recherche sur le mot : {{nom}}</h1> <br />
+	Voici la liste des concepts/termes associés à ce mot
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Nom</th>
+					<th>Decription</th>
+					<th>Type<th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for concept in tabConcept %}
+					<tr>
+						<td>{{concept.nomConcept}}</td>
+						<td>{{concept.description}}</td>
+						<td>Concept</td>
+						<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span>Details</a></td></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+			<tbody>
+				{% for terme in tabTerme %}
+					<tr>
+						<td>{{terme.nomTerme}}</td>
+						<td>{{terme.description}}</td>
+						<td>Terme</td>
+						<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span>Details</a></td></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+{% endblock %}

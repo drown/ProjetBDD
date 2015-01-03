@@ -4,6 +4,8 @@ namespace ProjetBDD\GeneralBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use ProjetBDD\GeneralBundle\Entity\Concept;
+use ProjetBDD\GeneralBundle\Entity\TermeVedette;
+use ProjetBDD\GeneralBundle\Entity\Terme;
 
 class DefaultController extends Controller
 {
@@ -15,119 +17,70 @@ class DefaultController extends Controller
         return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('result' => $result));
     }
 
-    public function rechercheAction(Request $requete)
+    public function rechercheAction()
     {
     	//Erreur si pas de requete post ou aucun resultat
     	//Sinon 2 tableaux, tabConcept et tabTermes
-    	$nom = $requete->request->get('nom');
-    	if (isset($nom)) {
+    	$request = $this->getRequest();
 
-    		$crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
-    		$crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
+    	if ($request->getMethod() == 'POST')
+        {
+        	if (isset($_POST['nom'])) {
+        		$crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
+        		$crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
+        		$crudConcept = $crudConcept->findByNom($_POST['nom']);
+        		$crudTerme = $crudTerme->findByNom($_POST['nom']);
 
-    		$tabConcept = array();
-    		$tabTerme = array();
-
-    		//Recuperation des tableaux 
-    		$tabConcept = $crudConcept->findByNom($nom);
-    		$tabTerme = $crudTerme->findByNom($nom);
-    		//Ils peuvent etre vide, si oui erreur
-    		if ( (count($tabConcept) > 0) || (count($tabTerme) > 0) ) {
-    			return $this->render('ProjetBDDGeneralBundle:Default:recherche.html.twig', array('tabConcept' => $tabConcept, 'tabTerme' => $tabTerme));
-    		} else {
-    			return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun concept/terme correspond à votre recherche'));
-    		}
-    	}
-    	else {
-    		return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun concept/terme correspond à votre recherche'));
-    	}
+        		return $this->render('ProjetBDDGeneralBundle:Default:recherche.html.twig', array('tabConcept' => $crudConcept, 'tabTerme' => $crudTerme, 'nom' => $_POST['nom']));
+        	}
+        }
+        else {
+        	return $this->render('ProjetBDDGeneralBundle:Default:recherche.html.twig', array());
+        }
     }
 
     public function afficherTermeAction($nom) {
     	$crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
     	$terme = $crudTerme->getByNom($nom);
 
-    	$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
-		if (!$connect)
-		{
-			$e = oci_error();
-			throw new \Exception('Erreur de connexion : '. $e['message']);
-		}
-
-    	if (isset($terme)) {
+    	if (isset($nom)) {
     		$tabAssoc = array();
     		$tabTraduit = array();
     		$tabSynonyme = array();
+    		$termeTravail = null;
     		foreach ($terme->getAssocie() as $key => $value) {
-    			$tabAssoc[] = $value;
-    			$requete = oci_parse($connect, 'SELECT description FROM Terme WHERE nomTerme = :nomT');
-				oci_bind_by_name($requete, ':nomT', $value);
-
-				if (!$requete)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur de requête : '. $e['message']);
+				$termeTravail = $crudTerme->getByNom($value);
+				if (isset($termeTravail)) {
+					$tabAssoc[] = $termeTravail;
+					$termeTravail = null;
 				}
-
-				$exe = oci_execute($requete);
-
-				while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
-				{	
-					//Normalement qu'1 mais bon..
-					$tabAssoc[] = $ligne['DESCRIPTION'];
-				}
-
-    		}
+      		}
     		foreach ($terme->getTraduit() as $key => $value) {
-    			$tabTraduit[] = $value;
-    			$requete = oci_parse($connect, 'SELECT description FROM Terme WHERE nomTerme = :nomT');
-				oci_bind_by_name($requete, ':nomT', $value);
-
-				if (!$requete)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur de requête : '. $e['message']);
-				}
-
-				$exe = oci_execute($requete);
-
-				while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
-				{	
-					//Normalement qu'1 mais bon..
-					$tabTraduit[] = $ligne['DESCRIPTION'];
+    			$termeTravail = $crudTerme->getByNom($value);
+				if (isset($termeTravail)) {
+					$tabTraduit[] = $termeTravail;
+					$termeTravail = null;
 				}
     		}
 
-    		foreach ($terme->getSynonyme() as $key => $value) {
-    			$tabSynonyme[] = $value;
-    			$requete = oci_parse($connect, 'SELECT description FROM TermeVedette WHERE nomTermeVedette = :nomT');
-    			oci_bind_by_name($requete, ':nomT', $value);
-
-				if (!$requete)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur de requête : '. $e['message']);
-				}
-
-				$exe = oci_execute($requete);
-
-				while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
-				{	
-					//Normalement qu'1 mais bon..
-					$tabSynonyme[] = $ligne['DESCRIPTION'];
+    		foreach ($terme->getSynonymes() as $key => $value) {
+    			$termeTravail = $crudTerme->getByNom($value);
+				if (isset($termeTravail)) {
+					$tabSynonyme[] = $termeTravail;
+					$termeTravail = null;
 				}
     		}
 
     		//Il manque synonymes.
-    		return $this->render('ProjetBDDGeneralBundle:Default:affiche.html.twig', array('nomTerme' => $terme->getNomTerme(),
-    																						'descTerme' => $terme->getDescrition(),
+    		return $this->render('ProjetBDDGeneralBundle:Default:afficheTerme.html.twig', array('nomTerme' => $terme->getNomTerme(),
+    																						'descTerme' => $terme->getDescription(),
     																						'tabAssoc' => $tabAssoc,
     																						'tabTraduit' => $tabTraduit,
     																						'tabSynonyme'=> $tabSynonyme));
     		oci_free_statement($requete);
     	}
     	else {
-    		return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun terme correspond à votre recherche'));
+    		return $this->render('ProjetBDDGeneralBundle:Default:afficheTerme.html.twig', array('error' => 'Aucun terme correspond à votre recherche'));
     	}
 
     	oci_close($connect);
@@ -136,8 +89,9 @@ class DefaultController extends Controller
     public function afficherConceptAction($nom) {
     	//On recupere l'objet associé
     	$crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
-    	$concept = $crudConcept->getByNom($nom);
-    	if (isset($result)) {
+    	
+    	if (isset($nom)) {
+    		$concept = $crudConcept->getByNom($nom);
     		//On va aller dans la BDD, recuperer le termevedette associé a ce concept.
     		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
@@ -148,7 +102,7 @@ class DefaultController extends Controller
 			}
 
 			$requete = oci_parse($connect, 'SELECT nomTerme, description FROM TermeVedette t WHERE DEREF(concept).nomConcept = :nomC ');
-			oci_bind_by_name($requete, ':nomC', $concept->getNomConcept());
+			oci_bind_by_name($requete, ':nomC', $nom);
 
 			if (!$requete)
 			{
@@ -166,13 +120,17 @@ class DefaultController extends Controller
 
 			while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
 			{
+
 				//Normalement qu'une seule fois
-				$nomTermeVedette = $ligne['NOMCONCEPT'];
+
+				//TODO : un seul termevedette associé a un concept, right?
+				$nomTermeVedette = $ligne['NOMTERME'];
 				$descTermeVedette = $ligne['DESCRIPTION'];
+				$terme = $this->container->get('ProjetBDD.CRUD.Terme');
 
 				$tabAssoc = array();
-				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme, description FROM Terme WHERE DEREF(VALUE(associe)).nomTerme = :nomT');
-				oci_bind_by_name($requeteAssoc, ':nomT', $nomTermeVedette);
+				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme FROM Terme t, Table (t.associe) t2 WHERE DEREF(VALUE(t2)).nomTerme = :nomT');
+				oci_bind_by_name($requeteAssoc, ':nomT', $nom);
 				if (!$requeteAssoc)
 				{
 					$e = oci_error();
@@ -188,14 +146,15 @@ class DefaultController extends Controller
 				}
 				while (($ligneAssoc = oci_fetch_array($requeteAssoc, OCI_ASSOC)))
 				{
-					$tabAssoc[] = $ligneAssoc['NOMTERME'];
-					$tabAssoc[] = $ligneAssoc['DESCRIPTION'];
+					
+					$res = $terme->getByNom($ligneAssoc['NOMTERME']);
+					$tabAssoc[] = $res;
 				}
 
 
 				$tabTraduit = array();
-				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme, description FROM Terme WHERE DEREF(VALUE(traduit)).nomTerme = :nomT');
-				oci_bind_by_name($requeteAssoc, ':nomT', $nomTermeVedette);
+				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme FROM Terme t, Table (t.traduit) t2 WHERE DEREF(VALUE(t2)).nomTerme = :nomT');
+				oci_bind_by_name($requeteAssoc, ':nomT', $nom);
 				if (!$requeteAssoc)
 				{
 					$e = oci_error();
@@ -211,13 +170,13 @@ class DefaultController extends Controller
 				}
 				while (($ligneAssoc = oci_fetch_array($requeteAssoc, OCI_ASSOC)))
 				{
-					$tabTraduit[] = $ligneAssoc['NOMTERME'];
-					$tabTraduit[] = $ligneAssoc['DESCRIPTION'];
+					$res = $terme->getByNom($ligneAssoc['NOMTERME']);
+					$tabTraduit[] = $res;
 				}
 
 				$tabSynonyme = array();
-				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme, description FROM Terme WHERE DEREF(VALUE(synonyme)).nomTerme = :nomT');
-				oci_bind_by_name($requeteAssoc, ':nomT', $nomTermeVedette);
+				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme FROM Terme t, Table (t.synonymes) t2 WHERE DEREF(VALUE(t2)).nomTerme = :nomT');
+				oci_bind_by_name($requeteAssoc, ':nomT', $nom);
 				if (!$requeteAssoc)
 				{
 					$e = oci_error();
@@ -233,24 +192,21 @@ class DefaultController extends Controller
 				}
 				while (($ligneAssoc = oci_fetch_array($requeteAssoc, OCI_ASSOC)))
 				{
-					$tabSynonyme[] = $ligneAssoc['NOMTERME'];
-					$tabSynonyme[] = $ligneAssoc['DESCRIPTION'];
+					$res = $terme->getByNom($ligneAssoc['NOMTERME']);
+					$tabSynonyme[] = $res;
 				}	
 			}
 			oci_free_statement($requeteAssoc);
 			oci_close($connect);
 			//Il manque le tab synonymes.
-			return $this->render('ProjetBDDGeneralBundle:Default:affiche.html.twig', array('nomConcept' => $concept->getNomConcept(),
-																							'descConcept' => $concept->getDescription(),
-																							'nomTermeVedette' => $nomTermeVedette,
-																							'descTermeVedette' => $descTermeVedette,
-																							'tabAssocie' => $tabAssocie,
-																							'tabTraduit' => $tabTraduit,
-																							'tabSynonyme' => $tabSynonyme));
+			return $this->render('ProjetBDDGeneralBundle:Default:afficheConcept.html.twig', array(
+				'nomConcept' => $concept->getNomConcept(),'descConcept' => $concept->getDescription(),
+				'nomTermeVedette' => $nomTermeVedette,'descTermeVedette' => $descTermeVedette,'tabAssocie' => $tabAssoc,
+				'tabTraduit' => $tabTraduit,'tabSynonyme' => $tabSynonyme));
 
 
     	} else {
-    		return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('error' => 'Aucun concept correspond à votre recherche'));
+    		return $this->render('ProjetBDDGeneralBundle:Default:afficheConcept.html.twig', array('error' => 'Aucun concept correspond à votre recherche'));
     	}
     }	
 }

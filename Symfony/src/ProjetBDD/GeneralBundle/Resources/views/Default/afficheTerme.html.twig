@@ -1,0 +1,89 @@
+{% extends '::layout.html.twig' %}
+
+{% block title %} Accueil {% endblock %}
+
+{% block corps %}
+
+	{% if error is defined %}
+		{{error}}
+	{% else %}
+
+		<h1>Détails du terme : {{nomTerme}} </h1> <br />
+	
+		Nom : {{nomTerme}} <br />
+
+		Description : {{descTerme}} <br /><br />
+
+
+
+
+
+		Liste des termes associés : 
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Decription</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for terme in tabAssoc %}
+						<tr>
+							<td>{{terme.nomTerme}}</td>
+							<td>{{terme.description}}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		Liste des termes traduits : 
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Decription</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for terme in tabTraduit %}
+						<tr>
+							<td>{{terme.nomTerme}}</td>
+							<td>{{terme.description}}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		Liste des synonymes : 
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Decription</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for terme in tabSynonyme %}
+						<tr>
+							<td>{{terme.nomTerme}}</td>
+							<td>{{terme.description}}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	<form method="post" action="{{path('ProjetBDDGeneralRecherche')}}" class="form-inline" style="margin-top:50px; margin-left : 15px;">
+            <div class="form-group">
+              <input type="hidden" name="nom" value="{{nomTerme}}" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Retour</button>
+          </form>
+    {% endif %}
+
+
+{% endblock %}

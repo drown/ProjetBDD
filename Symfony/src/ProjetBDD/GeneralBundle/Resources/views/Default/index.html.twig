@@ -5,11 +5,12 @@
 {% block corps %}
 
 <p><img src="{{ asset('logo.png') }}" width="100px"/>Bienvenue sur notre Thésaurus !</p>
-           <form action="{{path('ProjetBDDGeneralRecherche')}}" class="form-inline" style="margin-top:50px; margin-left : 15px;">
+<p> Veuillez saisir le mot à rechercher : 
+           <form method="post" action="{{path('ProjetBDDGeneralRecherche')}}" class="form-inline" style="margin-top:50px; margin-left : 15px;">
             <div class="form-group">
-              <input type="text" placeholder="Exemple : Soldat" class="form-control">
+              <input type="text" name="nom" placeholder="Exemple : Soldat" class="form-control">
             </div>
             <button type="submit" class="btn btn-success">Rechercher</button>
           </form>
-
+</p>
 {% endblock %}

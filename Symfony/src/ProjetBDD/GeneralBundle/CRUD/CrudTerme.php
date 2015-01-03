@@ -123,7 +123,7 @@ class CrudTerme
 			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 		}
 
-		$TabTerme = array();
+		$tabTerme = array();
 
 		while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
 		{
@@ -173,11 +173,14 @@ class CrudTerme
 		
 			while (($ligneSynonymes = oci_fetch_array($requeteSynonymes, OCI_ASSOC)))
 				end($tabTerme)->addSynonymes($ligneSynonymes['NOM']);		
+
+			oci_free_statement($requeteAssocie);
+			oci_free_statement($requeteTraduit);
+			oci_free_statement($requeteSynonymes);
 		}
 
 		oci_free_statement($requete);
-		oci_free_statement($requeteSpecialise);
-		oci_free_statement($requeteGeneralise);
+		
 		oci_close($connect);
 
 		if (count($tabTerme) == 0)
@@ -196,7 +199,7 @@ class CrudTerme
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		$requete = oci_parse($connect, 'SELECT COUNT(*) AS cpt FROM Terme WHERE nomTerme = :nomC');
+		/*$requete = oci_parse($connect, 'SELECT COUNT(*) AS cpt FROM Terme WHERE nomTerme = :nomC');
 		oci_bind_by_name($requete, ':nomC', $nom);
 
 		if (!$requete)
@@ -212,25 +215,26 @@ class CrudTerme
 			$e = oci_error();
 			throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 		}
-			$terme = null;
 
-			$ligne = oci_fetch_array($requete, OCI_ASSOC);
+		$terme = null;
 
-			if ($ligne['CPT'] == 0)
-				return $this->getVedetteByNom($nom);
+		$ligne = oci_fetch_array($requete, OCI_ASSOC);
 
-			oci_free_statement($requete);
+		if ($ligne['CPT'] == 0)
+			return $this->getVedetteByNom($nom);
 
-			$requete = oci_parse($connect, 'SELECT nomTerme, description FROM Terme WHERE nomTerme = :nomC');
-			oci_bind_by_name($requete, ':nomC', $nom);
+		oci_free_statement($requete);*/
 
-			if (!$requete)
-			{
-				$e = oci_error();
-				throw new \Exception('Erreur de requête : '. $e['message']);
-			}
+		$requete = oci_parse($connect, 'SELECT nomTerme, description FROM Terme WHERE nomTerme = :nomC');
+		oci_bind_by_name($requete, ':nomC', $nom);
 
-			$exe = oci_execute($requete);
+		if (!$requete)
+		{
+			$e = oci_error();
+			throw new \Exception('Erreur de requête : '. $e['message']);
+		}
+
+		$exe = oci_execute($requete);
 
 		if (!$exe)
 		{

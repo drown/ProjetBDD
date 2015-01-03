@@ -6,7 +6,11 @@ ProjetBDDGeneralRecherche :
     path : /projetBDD/recherche
     defaults : {_controller : ProjetBDDGeneralBundle:Default:recherche}
 
-ProjetBDDGeneralAfficher :
-    path : /ProjetBDD/ProjetBDDGeneralAfficher
-    defaults : {_controller : ProjetBDDGeneralBundle:Defaults:afficher}
+ProjetBDDGeneralAfficheConcept :
+    path : /projetBDD/afficheConcept/{nom}
+    defaults : {_controller : ProjetBDDGeneralBundle:Default:afficherConcept}
+
+ProjetBDDGeneralAfficheTerme :
+    path : /ProjetBDD/afficheTerme/{nom}
+    defaults : {_controller : ProjetBDDGeneralBundle:Default:afficherTerme}
 
