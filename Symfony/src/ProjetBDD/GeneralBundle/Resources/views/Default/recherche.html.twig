@@ -13,7 +13,6 @@
 					<th>Nom</th>
 					<th>Decription</th>
 					<th>Type<th>
-					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -21,10 +20,9 @@
 
 					{% for concept in tabConcept %}
 						<tr>
-							<td>{{concept.nomConcept}}</td>
+							<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
 							<td>{{concept.description}}</td>
 							<td>Concept</td>
-							<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span>Details</a></td></td>
 						</tr>
 					{% endfor %}
 				{% endif %}
@@ -33,15 +31,16 @@
 				{% if tabTerme is not empty %}
 					{% for terme in tabTerme %}
 						<tr>
-							<td>{{terme.nomTerme}}</td>
+							<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
 							<td>{{terme.description}}</td>
 							<td>Terme</td>
-							<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span>Details</a></td></td>
 						</tr>
 					{% endfor %}
 				{% endif %}
 			</tbody>
 		</table>
 	</div>
+
+	<a href="{{path('ProjetBDDGeneralIndex')}}" type="button" class="btn btn-success">Retour a l'accueil</a>
 
 {% endblock %}

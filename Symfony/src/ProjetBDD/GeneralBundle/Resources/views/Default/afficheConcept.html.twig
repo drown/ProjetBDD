@@ -30,7 +30,7 @@
 					<tbody>
 						{% for terme in tabAssocie %}
 							<tr>
-								<td>{{terme.nomTerme}}</td>
+								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}
@@ -54,7 +54,7 @@
 					<tbody>
 						{% for terme in tabTraduit %}
 							<tr>
-								<td>{{terme.nomTerme}}</td>
+								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}
@@ -78,7 +78,7 @@
 					<tbody>
 						{% for terme in tabSynonyme %}
 							<tr>
-								<td>{{terme.nomTerme}}</td>
+								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}
