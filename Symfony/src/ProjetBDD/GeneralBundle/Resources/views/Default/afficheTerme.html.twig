@@ -27,7 +27,11 @@
 					<tbody>
 						{% for terme in tabAssoc %}
 							<tr>
-								<td>{{terme.nomTerme}}</td>
+								{% if terme.getNomTerme is defined %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% else %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+								{% endif %}
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}
@@ -51,7 +55,11 @@
 					<tbody>
 						{% for terme in tabTraduit %}
 							<tr>
-								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% if terme.getNomTerme is defined %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% else %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+								{% endif %}
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}
@@ -75,7 +83,11 @@
 					<tbody>
 						{% for terme in tabSynonyme %}
 							<tr>
-								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% if terme.getNomTerme is defined %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% else %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+								{% endif %}
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}

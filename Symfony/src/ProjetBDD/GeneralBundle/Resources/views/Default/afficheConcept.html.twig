@@ -18,7 +18,7 @@
 		Descritpion de ce terme : {{descTermeVedette}} <br /><br />
 
 		{% if tabAssocie is not empty %}
-			Liste des termes associés : 
+			Liste des termes associés au terme vedette : 
 			<div class="table-responsive">
 				<table class="table table-striped">
 					<thead>
@@ -30,7 +30,11 @@
 					<tbody>
 						{% for terme in tabAssocie %}
 							<tr>
-								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% if terme.getNomTerme is defined %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% else %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+								{% endif %}
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}
@@ -38,7 +42,7 @@
 				</table>
 			</div>
 		{% else %}
-			Aucun terme associé
+			Aucun terme associé <br />
 		{% endif %}
 
 		{% if tabTraduit is not empty %}
@@ -54,7 +58,11 @@
 					<tbody>
 						{% for terme in tabTraduit %}
 							<tr>
-								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% if terme.getNomTerme is defined %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% else %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+								{% endif %}
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}
@@ -78,7 +86,11 @@
 					<tbody>
 						{% for terme in tabSynonyme %}
 							<tr>
-								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% if terme.getNomTerme is defined %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								{% else %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+								{% endif %}
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}
