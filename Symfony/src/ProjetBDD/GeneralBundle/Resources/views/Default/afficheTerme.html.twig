@@ -27,7 +27,7 @@
 					<tbody>
 						{% for terme in tabAssoc %}
 							<tr>
-								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								<td>{{terme.nomTerme}}</td>
 								<td>{{terme.description}}</td>
 							</tr>
 						{% endfor %}

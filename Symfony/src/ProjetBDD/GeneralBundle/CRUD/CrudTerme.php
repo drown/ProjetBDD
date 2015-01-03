@@ -199,7 +199,7 @@ class CrudTerme
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		/*$requete = oci_parse($connect, 'SELECT COUNT(*) AS cpt FROM Terme WHERE nomTerme = :nomC');
+		$requete = oci_parse($connect, 'SELECT COUNT(*) AS cpt FROM Terme WHERE nomTerme = :nomC');
 		oci_bind_by_name($requete, ':nomC', $nom);
 
 		if (!$requete)
@@ -223,7 +223,7 @@ class CrudTerme
 		if ($ligne['CPT'] == 0)
 			return $this->getVedetteByNom($nom);
 
-		oci_free_statement($requete);*/
+		oci_free_statement($requete);
 
 		$requete = oci_parse($connect, 'SELECT nomTerme, description FROM Terme WHERE nomTerme = :nomC');
 		oci_bind_by_name($requete, ':nomC', $nom);
