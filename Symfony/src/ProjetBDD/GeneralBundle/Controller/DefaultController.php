@@ -47,7 +47,7 @@ class DefaultController extends Controller
     		$tabAssoc = array();
     		$tabTraduit = array();
     		$tabSynonyme = array();
-    		$termeTravail = null;
+    		
     		foreach ($terme->getAssocie() as $key => $value) {
 				$termeTravail = $crudTerme->getByNom($value);
 				if (isset($termeTravail)) {

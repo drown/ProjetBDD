@@ -17,24 +17,29 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for concept in tabConcept %}
-					<tr>
-						<td>{{concept.nomConcept}}</td>
-						<td>{{concept.description}}</td>
-						<td>Concept</td>
-						<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span>Details</a></td></td>
-					</tr>
-				{% endfor %}
+				{% if tabConcept is not empty %}
+
+					{% for concept in tabConcept %}
+						<tr>
+							<td>{{concept.nomConcept}}</td>
+							<td>{{concept.description}}</td>
+							<td>Concept</td>
+							<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span>Details</a></td></td>
+						</tr>
+					{% endfor %}
+				{% endif %}
 			</tbody>
 			<tbody>
-				{% for terme in tabTerme %}
-					<tr>
-						<td>{{terme.nomTerme}}</td>
-						<td>{{terme.description}}</td>
-						<td>Terme</td>
-						<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span>Details</a></td></td>
-					</tr>
-				{% endfor %}
+				{% if tabTerme is not empty %}
+					{% for terme in tabTerme %}
+						<tr>
+							<td>{{terme.nomTerme}}</td>
+							<td>{{terme.description}}</td>
+							<td>Terme</td>
+							<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span>Details</a></td></td>
+						</tr>
+					{% endfor %}
+				{% endif %}
 			</tbody>
 		</table>
 	</div>

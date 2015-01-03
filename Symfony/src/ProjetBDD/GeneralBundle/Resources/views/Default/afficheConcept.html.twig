@@ -17,65 +17,77 @@
 		Terme Vedette associé : {{nomTermeVedette}} <br />
 		Descritpion de ce terme : {{descTermeVedette}} <br /><br />
 
-		Liste des termes associés : 
-		<div class="table-responsive">
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>Nom</th>
-						<th>Decription</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for terme in tabAssocie %}
+		{% if tabAssocie is not empty %}
+			Liste des termes associés : 
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead>
 						<tr>
-							<td>{{terme.nomTerme}}</td>
-							<td>{{terme.description}}</td>
+							<th>Nom</th>
+							<th>Decription</th>
 						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
+					</thead>
+					<tbody>
+						{% for terme in tabAssocie %}
+							<tr>
+								<td>{{terme.nomTerme}}</td>
+								<td>{{terme.description}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% else %}
+			Aucun terme associé
+		{% endif %}
 
-		Liste des termes traduits : 
-		<div class="table-responsive">
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>Nom</th>
-						<th>Decription</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for terme in tabTraduit %}
+		{% if tabTraduit is not empty %}
+			Liste des termes traduits : 
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead>
 						<tr>
-							<td>{{terme.nomTerme}}</td>
-							<td>{{terme.description}}</td>
+							<th>Nom</th>
+							<th>Decription</th>
 						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
+					</thead>
+					<tbody>
+						{% for terme in tabTraduit %}
+							<tr>
+								<td>{{terme.nomTerme}}</td>
+								<td>{{terme.description}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% else %}
+			Aucune traduction possible<br />
+		{% endif %}
 
-		Liste des synonymes : 
-		<div class="table-responsive">
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>Nom</th>
-						<th>Decription</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for terme in tabSynonyme %}
+		{% if tabSynonyme is not empty %}
+			Liste des synonymes : 
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead>
 						<tr>
-							<td>{{terme.nomTerme}}</td>
-							<td>{{terme.description}}</td>
+							<th>Nom</th>
+							<th>Decription</th>
 						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
+					</thead>
+					<tbody>
+						{% for terme in tabSynonyme %}
+							<tr>
+								<td>{{terme.nomTerme}}</td>
+								<td>{{terme.description}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% else %}
+			Aucun synonyme disponible <br />
+		{% endif %}
 	
 
 	<form method="post" action="{{path('ProjetBDDGeneralRecherche')}}" class="form-inline" style="margin-top:50px; margin-left : 15px;">
