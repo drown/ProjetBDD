@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 namespace ProjetBDD\AdminBundle\Controller;
 
@@ -64,18 +64,18 @@ class ConceptController extends Controller
         	}
         	elseif (isset($_POST['generaliseAction']))
         	{
-        		return $this->modifierGeneralise($request, $concept, $crudConcept, $tabConcept);
+        		return $this->modifierGeneralise($request, $concept, $crudConcept, $tabConcept, $termeVedette);
         	}
         	elseif (isset($_POST['specialiseAction']))
         	{
-        		return $this->modificationSpecialise($request, $concept, $crudConcept, $tabConcept);
+        		return $this->modificationSpecialise($request, $concept, $crudConcept, $tabConcept, $termeVedette);
         	}
         }
 
        	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'tabConcept' => $tabConcept, 'termeVedette' => $termeVedette));
     }
 
-    public function modifierGeneralise($request, $concept, $crudConcept, $tabConcept)
+    public function modifierGeneralise($request, $concept, $crudConcept, $tabConcept, $termeVedette)
     {
     	$tabC = $concept->getGeneralise();
     	$concept->freeGeneralise();
@@ -109,7 +109,7 @@ class ConceptController extends Controller
     	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'termeVedette' => $termeVedette, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
-    public function modifierSpecialise($request, $concept, $crudConcept, $tabConcept)
+    public function modifierSpecialise($request, $concept, $crudConcept, $tabConcept, $termeVedette)
     {
         $tabC = $concept->getSpecialise();
         $concept->freeSpecialise();
