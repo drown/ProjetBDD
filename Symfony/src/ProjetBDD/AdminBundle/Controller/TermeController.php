@@ -51,7 +51,8 @@ class TermeController extends Controller
         		$terme->setDescription($request->request->get('description'));
 
         		$crudTerme->update($terme);
-
+                //asort($tabTerme);
+                //asort($tabTermeV);
         		return $this->render('ProjetBDDAdminBundle:Terme:modification.html.twig', array('terme' => $terme, 'tabTerme' => $tabTerme, 'tabTermeV' => $tabTermeV, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
         	}
         	elseif (isset($_POST['associeAction']))
@@ -67,7 +68,8 @@ class TermeController extends Controller
                 return $this->modifierSynonymes($request, $terme, $crudTerme, $tabTerme, $tabTermeV);
             }
         }
-
+        //asort($tabTerme);
+        //asort($tabTermeV);
        	return $this->render('ProjetBDDAdminBundle:Terme:modification.html.twig', array('terme' => $terme, 'tabTerme' => $tabTerme, 'tabTermeV' => $tabTermeV));
     }
 
@@ -102,7 +104,8 @@ class TermeController extends Controller
     	}
 
     	$crudTerme->update($terme);
-
+        //asort($tabTerme);
+        //asort($tabTermeV);
     	return $this->render('ProjetBDDAdminBundle:Terme:modification.html.twig', array('terme' => $terme, 'tabTerme' => $tabTerme, 'tabTermeV' => $tabTermeV, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
@@ -137,7 +140,8 @@ class TermeController extends Controller
         }
 
         $crudTerme->update($terme);
-
+        //asort($tabTerme);
+        //asort($tabTermeV);
         return $this->render('ProjetBDDAdminBundle:Terme:modification.html.twig', array('terme' => $terme, 'tabTerme' => $tabTerme, 'tabTermeV' => $tabTermeV, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
@@ -181,7 +185,8 @@ class TermeController extends Controller
         }
 
         $crudTermeVedette->update($terme);
-
+        //asort($tabTerme);
+        //asort($tabTermeV);
         return $this->render('ProjetBDDAdminBundle:Terme:modification.html.twig', array('terme' => $terme, 'tabTerme' => $tabTerme, 'tabTermeV' => $tabTermeV, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 

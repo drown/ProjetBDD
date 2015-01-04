@@ -17,4 +17,12 @@ class TermeVedette extends Terme
 	{
 		return $this->concept;
 	}
+
+	public function isTermeVedette() {
+		return true;
+	}
+
+	public function isConcept() {
+		return false;
+	}
 }

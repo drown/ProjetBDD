@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 namespace ProjetBDD\AdminBundle\Controller;
 
@@ -71,7 +71,8 @@ class ConceptController extends Controller
         		return $this->modificationSpecialise($request, $concept, $crudConcept, $tabConcept, $termeVedette);
         	}
         }
-
+        //asort($tabConcept);
+        
        	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'tabConcept' => $tabConcept, 'termeVedette' => $termeVedette));
     }
 
@@ -105,7 +106,7 @@ class ConceptController extends Controller
     	}
 
     	$crudConcept->update($concept);
-
+        //asort($tabConcept);
     	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'termeVedette' => $termeVedette, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
@@ -139,7 +140,7 @@ class ConceptController extends Controller
         }
 
         $crudConcept->update($concept);
-
+        //asort($tabConcept);
         return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'termeVedette' => $termeVedette, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 

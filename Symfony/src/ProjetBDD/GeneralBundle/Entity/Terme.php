@@ -117,4 +117,12 @@ class Terme
 		unset($this->synonymes);
 		$this->synonymes = array();
 	}
+
+	public function isTermeVedette() {
+		return false;
+	}
+
+	public function isConcept() {
+		return false;
+	}
 }

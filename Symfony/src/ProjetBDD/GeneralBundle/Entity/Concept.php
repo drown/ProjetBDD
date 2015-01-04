@@ -89,4 +89,8 @@ class Concept
 		unset($this->specialise);
 		$this->specialise = array();
 	}
+
+	public function isConcept() {
+		return true;
+	}
 }

@@ -41,42 +41,89 @@ class DefaultController extends Controller
 
     public function afficherTermeAction($nom) {
     	$crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
+    	$crudTermeVedette = $this->container->get('ProjetBDD.CRUD.TermeVedette');
+    	$crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
     	$terme = $crudTerme->getByNom($nom);
 
     	if (isset($nom)) {
-    		$tabAssoc = array();
-    		$tabTraduit = array();
-    		$tabSynonyme = array();
+    		$connect = oci_connect('SYSTEM', 'Don699mute156', 'localhost/xe');
+    		//On va rechercher le terme vedette, on remontera au concept grace a ca
+			$requete = oci_parse($connect, 'SELECT nomTerme FROM TermeVedette t, Table(T.associe) t2 WHERE DEREF(VALUE(t2)).nomTerme = :nomT ');
+			oci_bind_by_name($requete, ':nomT', $nom);
+
+			if (!$requete)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur de requête : '. $e['message']);
+			}
+			$exe = oci_execute($requete);
+			if (!$exe)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+			}
+			$ligne = oci_fetch_array($requete, OCI_ASSOC);
+
+			$TV = $crudTermeVedette->getByNom($ligne['NOMTERME']);
+
+			$requete  = oci_parse($connect, 'SELECT deref(concept).nomConcept as NOMC FROM TermeVedette t WHERE nomTerme = :nomT');
+			oci_bind_by_name($requete, ':nomT', $ligne['NOMTERME']);
+			if (!$requete)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur de requête : '. $e['message']);
+			}
+			$exe = oci_execute($requete);
+			if (!$exe)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+			}
+			$ligne = oci_fetch_array($requete, OCI_ASSOC);
+
+			$concept = $crudConcept->getByNom($ligne['NOMC']);
+
+
+			$tabAssoc = $terme->getAssocie();
+			$tabTrad = $terme->getTraduit();
+			$tabSynonyme = $terme->getSynonymes();
+
+			$retourAssoc = array();
+
+			foreach ($tabAssoc as $key => $value) {
+				$terme2 = $crudTerme->getByNom($value);
+				if (!$terme2->isTermeVedette()) {
+					$retourAssoc[] = $terme2;
+				}
+				
+			}
+			$retourTrad = array();
+			foreach ($tabTrad as $key => $value) {
+				$terme2 = $crudTerme->getByNom($value);
+				if (!$terme2->isTermeVedette()) {
+					$retourTrad[] = $terme2;
+				}
+			}
+			$retourSyn = array();
+			foreach ($tabSynonyme as $key => $value) {
+				$terme2 = $crudTerme->getByNom($value);
+				
+				$retourSyn[] = $terme2;
+				
+			}
+				
+			asort($retourAssoc);
+			asort($retourTrad);
+			asort($retourSyn);
+
+
     		
-    		foreach ($terme->getAssocie() as $key => $value) {
-				$termeTravail = $crudTerme->getByNom($value);
-				if (isset($termeTravail)) {
-					$tabAssoc[] = $termeTravail;
-					$termeTravail = null;
-				}
-      		}
-    		foreach ($terme->getTraduit() as $key => $value) {
-    			$termeTravail = $crudTerme->getByNom($value);
-				if (isset($termeTravail)) {
-					$tabTraduit[] = $termeTravail;
-					$termeTravail = null;
-				}
-    		}
-
-    		foreach ($terme->getSynonymes() as $key => $value) {
-    			$termeTravail = $crudTerme->getByNom($value);
-				if (isset($termeTravail)) {
-					$tabSynonyme[] = $termeTravail;
-					$termeTravail = null;
-				}
-    		}
-
-    		//Il manque synonymes.
-    		return $this->render('ProjetBDDGeneralBundle:Default:afficheTerme.html.twig', array('nomTerme' => $terme->getNomTerme(),
-    																						'descTerme' => $terme->getDescription(),
-    																						'tabAssoc' => $tabAssoc,
-    																						'tabTraduit' => $tabTraduit,
-    																						'tabSynonyme'=> $tabSynonyme));
+    		return $this->render('ProjetBDDGeneralBundle:Default:afficheTerme.html.twig', array('terme' => $terme,
+    																						'TV' => $TV,
+    																						'concept' => $concept,
+    																						'tabAssoc' => $retourAssoc,
+    																						'tabTraduit' => $retourTrad,
+    																						'tabSynonyme'=> $retourSyn));
     		oci_free_statement($requete);
     	}
     	else {
@@ -93,7 +140,7 @@ class DefaultController extends Controller
     	if (isset($nom)) {
     		$concept = $crudConcept->getByNom($nom);
     		//On va aller dans la BDD, recuperer le termevedette associé a ce concept.
-    		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
+    		$connect = oci_connect('SYSTEM', 'Don699mute156', 'localhost/xe');
 
 			if (!$connect)
 			{
@@ -101,7 +148,7 @@ class DefaultController extends Controller
 				throw new \Exception('Erreur de connexion : '. $e['message']);
 			}
 
-			$requete = oci_parse($connect, 'SELECT nomTerme, description FROM TermeVedette t WHERE DEREF(concept).nomConcept = :nomC ');
+			$requete = oci_parse($connect, 'SELECT nomTerme FROM TermeVedette t WHERE DEREF(concept).nomConcept = :nomC ');
 			oci_bind_by_name($requete, ':nomC', $nom);
 
 			if (!$requete)
@@ -109,100 +156,80 @@ class DefaultController extends Controller
 				$e = oci_error();
 				throw new \Exception('Erreur de requête : '. $e['message']);
 			}
-
 			$exe = oci_execute($requete);
-
 			if (!$exe)
 			{
 				$e = oci_error();
 				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
 			}
+			$ligne = oci_fetch_array($requete, OCI_ASSOC);
 
+			$tabGeneralise = $concept->getGeneralise();
+			$tabSpecialise = $concept->getSpecialise();
+
+			$retourGene = array();
+			foreach ($tabGeneralise as $key => $value) {
+				# code...
+				$concept2 = $crudConcept->getByNom($value);
+				$retourGene[] = $concept2;
+			}
+			$retourSpe = array();
+			foreach ($tabSpecialise as $key => $value) {
+				# code...
+				$concept2 = $crudConcept->getByNom($value);
+				$retourSpe[] = $concept2;
+			}
+
+			$crudTermeVedette = $this->container->get('ProjetBDD.CRUD.TermeVedette');
+			$TV = $crudTermeVedette->getByNom($ligne['NOMTERME']);
+			$tabAssoc = $TV->getAssocie();
+			$tabTrad = $TV->getTraduit();
+			$tabSynonyme = $TV->getSynonymes();
+
+			$crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
+			$retourAssoc = array();
+			foreach ($tabAssoc as $key => $value) {
+				$retourAssoc[] = $crudTerme->getByNom($value);
+			}
+			$retourTrad = array();
+			foreach ($tabTrad as $key => $value) {
+				$retourTrad[] = $crudTerme->getByNom($value);
+			}
+			
+			//Synonyme ! 
+			$retourSyn = array();
+			$requete = oci_parse($connect, 'SELECT nomTerme FROM Terme T, Table(t.synonymes) t2 WHERE DEREF(VALUE(T2)).nomTerme = :nomT ');
+			oci_bind_by_name($requete, ':nomT', $nom);
+			if (!$requete)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur de requête : '. $e['message']);
+			}
+			$exe = oci_execute($requete);
+			if (!$exe)
+			{
+				$e = oci_error();
+				throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
+			}
 			while (($ligne = oci_fetch_array($requete, OCI_ASSOC)))
 			{
-
-				//Normalement qu'une seule fois
-
-				//TODO : un seul termevedette associé a un concept, right?
-				$nomTermeVedette = $ligne['NOMTERME'];
-				$descTermeVedette = $ligne['DESCRIPTION'];
-				$terme = $this->container->get('ProjetBDD.CRUD.Terme');
-
-				$tabAssoc = array();
-				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme FROM Terme t, Table (t.associe) t2 WHERE DEREF(VALUE(t2)).nomTerme = :nomT');
-				oci_bind_by_name($requeteAssoc, ':nomT', $nom);
-				if (!$requeteAssoc)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur de requête : '. $e['message']);
-				}
-
-				$exe = oci_execute($requeteAssoc);
-
-				if (!$exe)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-				}
-				while (($ligneAssoc = oci_fetch_array($requeteAssoc, OCI_ASSOC)))
-				{
-					
-					$res = $terme->getByNom($ligneAssoc['NOMTERME']);
-					$tabAssoc[] = $res;
-				}
-
-
-				$tabTraduit = array();
-				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme FROM Terme t, Table (t.traduit) t2 WHERE DEREF(VALUE(t2)).nomTerme = :nomT');
-				oci_bind_by_name($requeteAssoc, ':nomT', $nom);
-				if (!$requeteAssoc)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur de requête : '. $e['message']);
-				}
-
-				$exe = oci_execute($requeteAssoc);
-
-				if (!$exe)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-				}
-				while (($ligneAssoc = oci_fetch_array($requeteAssoc, OCI_ASSOC)))
-				{
-					$res = $terme->getByNom($ligneAssoc['NOMTERME']);
-					$tabTraduit[] = $res;
-				}
-
-				$tabSynonyme = array();
-				$requeteAssoc = oci_parse($connect, 'SELECT nomTerme FROM Terme t, Table (t.synonymes) t2 WHERE DEREF(VALUE(t2)).nomTerme = :nomT');
-				oci_bind_by_name($requeteAssoc, ':nomT', $nom);
-				if (!$requeteAssoc)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur de requête : '. $e['message']);
-				}
-
-				$exe = oci_execute($requeteAssoc);
-
-				if (!$exe)
-				{
-					$e = oci_error();
-					throw new \Exception('Erreur d\' éxécution de la requête : '. $e['message']);
-				}
-				while (($ligneAssoc = oci_fetch_array($requeteAssoc, OCI_ASSOC)))
-				{
-					$res = $terme->getByNom($ligneAssoc['NOMTERME']);
-					$tabSynonyme[] = $res;
-				}	
+				$retourSyn[] = $crudTerme->getByNom($ligne['NOMTERME']);
 			}
-			oci_free_statement($requeteAssoc);
+
+			asort($retourAssoc);
+			asort($retourTrad);
+			asort($retourSyn);
+			asort($retourGene);
+			asort($retourSpe);
+
+			
+			oci_free_statement($requete);
 			oci_close($connect);
 			//Il manque le tab synonymes.
 			return $this->render('ProjetBDDGeneralBundle:Default:afficheConcept.html.twig', array(
-				'nomConcept' => $concept->getNomConcept(),'descConcept' => $concept->getDescription(),
-				'nomTermeVedette' => $nomTermeVedette,'descTermeVedette' => $descTermeVedette,'tabAssocie' => $tabAssoc,
-				'tabTraduit' => $tabTraduit,'tabSynonyme' => $tabSynonyme));
+				'concept' => $concept, 'TV' => $TV,'tabAssocie' => $retourAssoc,
+				'tabTraduit' => $retourTrad,'tabSynonyme' => $retourSyn,
+				'tabGen' => $retourGene, 'tabSpe' => $retourSpe));
 
 
     	} else {

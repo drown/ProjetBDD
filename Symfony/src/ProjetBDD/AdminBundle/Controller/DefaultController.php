@@ -13,7 +13,7 @@ class DefaultController extends Controller
         $crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
 
         $tabConcept = $crudConcept->getAll();
-
+        //asort($tabConcept);
         return $this->render('ProjetBDDAdminBundle:Default:indexConcept.html.twig', array('tabConcept' => $tabConcept));
     }
 
@@ -22,7 +22,7 @@ class DefaultController extends Controller
         $crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
 
         $tabTerme = $crudTerme->getAll();
-
+        //asort($tabTerme);
         return $this->render('ProjetBDDAdminBundle:Default:indexTerme.html.twig', array('tabTerme' => $tabTerme));
     }
 }

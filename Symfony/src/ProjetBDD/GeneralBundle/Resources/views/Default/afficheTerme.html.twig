@@ -8,31 +8,70 @@
 		{{error}}
 	{% else %}
 
-		<h1>Détails du terme : {{nomTerme}} </h1> <br />
-	
-		Nom : {{nomTerme}} <br />
+		<h1>Détails du terme : {{terme.nomTerme}} </h1> <br />
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Details
+		</div>
+	</div>	
+		Nom : {{terme.nomTerme}} <br />
 
-		Description : {{descTerme}} <br /><br />
-
+		Description : {{terme.description}} <br /><br />
+</div>
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
+		Concept associé : 
+		</div>
+	</div>
+		{% if concept is not empty %}
+			
+			<div class="table-responsive panel-sucess">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Nom</th>
+							<th>Decription</th>
+							<th>Type</th>
+						</tr>
+					</thead>
+					<tbody>
+							<tr>
+								<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+								<td>{{concept.description}}</td>
+								<td>Concept</td>
+							</tr>
+					</tbody>
+				</table>
+			</div>
+		{% else %}
+			Aucun concept associé<br />
+		{% endif %}
+</div>
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
+		Liste des termes associés : 
+		</div>
+	</div>
 		{% if tabAssoc is not empty %}
-			Liste des termes associés : 
+			
 			<div class="table-responsive">
 				<table class="table table-striped">
 					<thead>
 						<tr>
 							<th>Nom</th>
 							<th>Decription</th>
+							<th>Type</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for terme in tabAssoc %}
 							<tr>
-								{% if terme.getNomTerme is defined %}
-									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
-								{% else %}
-									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
-								{% endif %}
+								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
 								<td>{{terme.description}}</td>
+								<td>Terme</td>
 							</tr>
 						{% endfor %}
 					</tbody>
@@ -41,26 +80,32 @@
 		{% else %}
 			Aucun terme associé<br />
 		{% endif %}
-
+</div>
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
+		Liste des termes traduits : 
+		</div>
+	</div>
 		{% if tabTraduit is not empty %}
-			Liste des termes traduits : 
+			
 			<div class="table-responsive">
 				<table class="table table-striped">
 					<thead>
 						<tr>
 							<th>Nom</th>
 							<th>Decription</th>
+							<th>Type</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for terme in tabTraduit %}
 							<tr>
-								{% if terme.getNomTerme is defined %}
-									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
-								{% else %}
-									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
-								{% endif %}
+								<tr>
+								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
 								<td>{{terme.description}}</td>
+								<td>Terme</td>
+							</tr>
 							</tr>
 						{% endfor %}
 					</tbody>
@@ -69,9 +114,15 @@
 		{% else %}
 			Aucune traduction possible <br />
 		{% endif %}
-
+</div>
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
+		Liste des synonymes : 
+		</div>
+	</div>
 		{% if tabSynonyme is not empty %}
-			Liste des synonymes : 
+			
 			<div class="table-responsive">
 				<table class="table table-striped">
 					<thead>
@@ -83,12 +134,14 @@
 					<tbody>
 						{% for terme in tabSynonyme %}
 							<tr>
-								{% if terme.getNomTerme is defined %}
-									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+								<tr>
+								{% if terme.istermevedette %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
 								{% else %}
-									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
 								{% endif %}
 								<td>{{terme.description}}</td>
+								<td>Terme</td>
 							</tr>
 						{% endfor %}
 					</tbody>
@@ -97,9 +150,10 @@
 		{% else %}
 			Aucun synonyme disponible <br />
 		{% endif %}
+</div>
 	<form method="post" action="{{path('ProjetBDDGeneralRecherche')}}" class="form-inline" style="margin-top:50px; margin-left : 15px;">
             <div class="form-group">
-              <input type="hidden" name="nom" value="{{nomTerme}}" class="form-control">
+              <input type="hidden" name="nom" value="{{terme.nomTerme}}" class="form-control">
             </div>
             <button type="submit" class="btn btn-success">Retour</button>
           </form>

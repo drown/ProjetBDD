@@ -8,17 +8,91 @@
 		{{error}}
 	{% else %}
 
-		<h1>Détails du concept : {{nomConcept}} </h1> <br />
-	
-		Nom : {{nomConcept}} <br />
+		<h1>Détails du concept : {{concept.nomConcept}} </h1> <br />
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Details
+		</div>
+	</div>
+		Nom : {{concept.nomConcept}} <br />
 
-		Description : {{descConcept}} <br /><br />
+		Description : {{concept.description}} <br /><br />
 
-		Terme Vedette associé : {{nomTermeVedette}} <br />
-		Descritpion de ce terme : {{descTermeVedette}} <br /><br />
+		Terme Vedette associé : {{TV.nomTerme}} <br />
+		Description de ce terme : {{TV.description}} <br /><br />
+</div>
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
+		Ce concept generalise :
+		</div>
+	</div>
+		{% if tabGen is not empty %}
+		
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Nom</th>
+							<th>Decription</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for concept in tabGen %}
+							<tr>
+								<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+								<td>{{concept.description}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% else %}
+			Aucun generalisation <br />
+		{% endif %}
+</div>
+
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
+		Ce concept specialise :
+		</div>
+	</div>
+		{% if tabSpe is not empty %}
+			
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Nom</th>
+							<th>Decription</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for concept in tabSpe %}
+							<tr>
+								<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : concept.nomConcept})}}" type="button" class="btn btn-default">{{concept.nomConcept}}</a></td>
+								<td>{{concept.description}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% else %}
+			Aucun specialisation <br />
+		{% endif %}
+</div>
+
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
+		Liste des termes associés au terme vedette : 
+		</div>
+	</div>
 
 		{% if tabAssocie is not empty %}
-			Liste des termes associés au terme vedette : 
+			
 			<div class="table-responsive">
 				<table class="table table-striped">
 					<thead>
@@ -44,9 +118,16 @@
 		{% else %}
 			Aucun terme associé <br />
 		{% endif %}
+</div>
 
-		{% if tabTraduit is not empty %}
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
 			Liste des termes traduits : 
+		</div>
+	</div>
+		{% if tabTraduit is not empty %}
+			
 			<div class="table-responsive">
 				<table class="table table-striped">
 					<thead>
@@ -72,9 +153,16 @@
 		{% else %}
 			Aucune traduction possible<br />
 		{% endif %}
+</div>
 
-		{% if tabSynonyme is not empty %}
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		<div class="panel-title">
 			Liste des synonymes : 
+		</div>
+	</div>
+		{% if tabSynonyme is not empty %}
+			
 			<div class="table-responsive">
 				<table class="table table-striped">
 					<thead>
@@ -100,11 +188,11 @@
 		{% else %}
 			Aucun synonyme disponible <br />
 		{% endif %}
-	
+</div>
 
 	<form method="post" action="{{path('ProjetBDDGeneralRecherche')}}" class="form-inline" style="margin-top:50px; margin-left : 15px;">
             <div class="form-group">
-              <input type="hidden" name="nom" value="{{nomConcept}}" class="form-control">
+              <input type="hidden" name="nom" value="{{concept.nomConcept}}" class="form-control">
             </div>
             <button type="submit" class="btn btn-success">Retour</button>
           </form>

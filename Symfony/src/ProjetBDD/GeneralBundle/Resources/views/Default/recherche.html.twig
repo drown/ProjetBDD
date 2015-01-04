@@ -5,7 +5,13 @@
 {% block corps %}
 
 <h1>Recherche sur le mot : {{nom}}</h1> <br />
-	Voici la liste des concepts/termes associés à ce mot
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<div class="panel-title">
+			Voici la liste des concepts/termes associés à ce mot :
+		</div>
+	</div>
+	
 	<div class="table-responsive">
 		<table class="table table-striped">
 			<thead>
@@ -40,7 +46,7 @@
 			</tbody>
 		</table>
 	</div>
-
+</div>
 	<a href="{{path('ProjetBDDGeneralIndex')}}" type="button" class="btn btn-success">Retour a l'accueil</a>
 
 {% endblock %}
