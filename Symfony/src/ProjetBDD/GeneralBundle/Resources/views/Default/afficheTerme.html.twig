@@ -136,12 +136,16 @@
 							<tr>
 								<tr>
 								{% if terme.istermevedette %}
+
 									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+									<td>{{terme.description}}</td>
+									<td>Concept</td>
 								{% else %}
 									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+									<td>{{terme.description}}</td>
+									<td>Terme</td>
 								{% endif %}
-								<td>{{terme.description}}</td>
-								<td>Terme</td>
+								
 							</tr>
 						{% endfor %}
 					</tbody>
