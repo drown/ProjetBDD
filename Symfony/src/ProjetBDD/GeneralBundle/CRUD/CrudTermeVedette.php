@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @file CrudTermeVedette.php
+ * @brief CRUD pour les TermeVedettes
+ * @author Brice V.
+ * @class CrudTermeVedette
+ */
+
 namespace ProjetBDD\Generalbundle\CRUD;
 
 use ProjetBDD\Generalbundle\CRUD\CrudTerme;

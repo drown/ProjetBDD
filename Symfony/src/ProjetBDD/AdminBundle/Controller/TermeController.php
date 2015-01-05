@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @file TermeController.php
+ * @brief Controleur d'administration des Termes, création, modification, suppression
+ * @author Brice V.
+ * @class TermeController
+ */
+
 namespace ProjetBDD\AdminBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

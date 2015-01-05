@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @file ConceptController.php
+ * @brief Controleur d'administration des Concepts, création, modification, suppression
+ * @author Brice V.
+ * @class ConceptController
+ */
+
 namespace ProjetBDD\AdminBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

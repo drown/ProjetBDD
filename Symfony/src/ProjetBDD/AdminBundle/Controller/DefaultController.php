@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @file DefaultController.php
+ * @brief Controleur d'affichage de liste de concept et de terme pour la page d'accueil des administration pour chacun d'entre eux.
+ * @author Brice V.
+ * @class DefaultController
+ */
+
 namespace ProjetBDD\AdminBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

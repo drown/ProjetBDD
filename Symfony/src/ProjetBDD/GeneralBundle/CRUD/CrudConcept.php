@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @file CrudConcept.php
+ * @brief CRUD pour les Concept
+ * @author Baptiste L.
+ * @class CrudConcept
+ */
+
 namespace ProjetBDD\Generalbundle\CRUD;
 
 use ProjetBDD\GeneralBundle\Entity\Concept;
