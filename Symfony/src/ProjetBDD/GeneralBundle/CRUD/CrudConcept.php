@@ -14,6 +14,12 @@ use ProjetBDD\GeneralBundle\Entity\Concept;
 
 class CrudConcept
 {
+	/*
+	@author Baptiste L.
+	@action recupere tout les concepts de la BD 
+	@param 
+	@return tableau de tout les concepts
+	*/
 	public function getAll()
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -42,6 +48,12 @@ class CrudConcept
 
 	}
 
+	/*
+	@author Baptiste L.
+	@action recupere tout les concept en fonction d'un mot cle 
+	@param nom d'un concept
+	@return tableau de tout les concepts disponible avec une partie du param
+	*/
 	public function findByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -122,6 +134,12 @@ class CrudConcept
 			return $tabConcept;
 	}
 
+	/*
+	@author Baptiste L.
+	@action recupere un concept specifique
+	@param nom d'un concept
+	@return son objet php
+	*/
 	public function getByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -202,6 +220,12 @@ class CrudConcept
 			return $concept;		
 	}
 
+	/*
+	@author Baptiste L.
+	@action Met a jour la BD avec un objet concept
+	@param Objet Concept
+	@return rien
+	*/
 	public function update($concept)
 	{
 		$nomConcept = $concept->getNomConcept();
@@ -308,6 +332,12 @@ class CrudConcept
 		//}
 	}
 
+	/*
+	@author Baptiste L.
+	@action creer un concept
+	@param Objet concept
+	@return rien
+	*/
 	public function creer($concept)
 	{
 		$nomConcept = $concept->getNomConcept();
@@ -404,7 +434,12 @@ class CrudConcept
 			
 		}
 	}
-
+	/*
+	@author Baptiste L.
+	@action supprime un concept
+	@param objet Concept
+	@return rien
+	*/
 	public function supprimer($concept)
 	{
 		$nomConcept = $concept->getNomConcept();

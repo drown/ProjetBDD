@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file Concept.php
+ * @brief Creation d'objets Concept
+ * @author Brice V.
+ * @class Concept
+ */
 
 namespace ProjetBDD\GeneralBundle\Entity;
 

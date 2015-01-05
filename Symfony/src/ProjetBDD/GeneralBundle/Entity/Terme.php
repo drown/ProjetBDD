@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * @file Terme.php
+ * @brief Creation d'objets Terme
+ * @author Brice V.
+ * @class Terme
+ */
 namespace ProjetBDD\GeneralBundle\Entity;
 
 class Terme

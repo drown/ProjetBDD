@@ -14,6 +14,12 @@ use ProjetBDD\GeneralBundle\Entity\TermeVedette;
 
 class CrudTermeVedette extends CrudTerme
 {
+	/*
+	@author Brice V.
+	@action Recupere tout les termevedette
+	@param rien
+	@return tableau de tout les termevedette 
+	*/
 	public function getAll()
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -42,6 +48,13 @@ class CrudTermeVedette extends CrudTerme
 		return $tabTerme;
 
 	}
+
+	/*
+	@author Brice V.
+	@action recupere un termevedette a partir de son concept
+	@param Objet concept
+	@return objet termevedette
+	*/
 
 	public function getByConcept($concept)
 	{
@@ -134,6 +147,12 @@ class CrudTermeVedette extends CrudTerme
 
 	}
 
+	/*
+	@author Brice V.
+	@action Creer un termevedette
+	@param Objet termevedette
+	@return rien
+	*/
 	public function creer($terme)
 	{
 		$nomTerme = $terme->getNomTerme();

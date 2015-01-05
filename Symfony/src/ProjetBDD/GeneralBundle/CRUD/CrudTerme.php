@@ -17,6 +17,12 @@ use ProjetBDD\GeneralBundle\CRUD\CrudConcept;
 
 class CrudTerme
 {
+	/*
+	@author Brice V.
+	@action Creer un terme
+	@param Objet terme
+	@return rien
+	*/
 	public function creer($terme)
 	{
 		$nomTerme = $terme->getNomTerme();
@@ -68,6 +74,12 @@ class CrudTerme
 
 	}
 
+	/*
+	@author Brice V.
+	@action recupere tout les termes
+	@param 
+	@return tableau de tout les termes
+	*/
 	public function getAll()
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -96,6 +108,12 @@ class CrudTerme
 
 	}
 
+	/*
+	@author Brice V.
+	@action recupere plusieurs termes via un mot clef
+	@param mot clef
+	@return tableau de termes qui possede ce mot clef en tant que nom
+	*/
 	public function findByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -196,6 +214,12 @@ class CrudTerme
 			return $tabTerme;
 	}
 
+	/*
+	@author Brice V.
+	@action Recupere un terme precis
+	@param nom du terme
+	@return objet terme
+	*/
 	public function getByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -305,6 +329,12 @@ class CrudTerme
 		
 	}
 
+	/*
+	@author Brice V.
+	@action recupere un terme vedette
+	@param nom du terme vedette
+	@return objet termevedette
+	*/
 	public function getVedetteByNom($nom)
 	{
 		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
@@ -391,6 +421,12 @@ class CrudTerme
 			return $terme;
 	}
 
+	/*
+	@author Brice V.
+	@action Met a jour un terme grace a l'objet
+	@param Objet terme
+	@return rien
+	*/
 	public function update($terme)
 	{
 		$nomTerme = $terme->getNomTerme();
@@ -543,6 +579,13 @@ class CrudTerme
 		oci_close($connect);
 	}
 	
+
+	/*
+	@author Brice V.
+	@action Supprime un terme
+	@param Objet terme
+	@return rien
+	*/
 	public function supprimer($terme)
 	{
 		$nomTerme = $terme->getNomTerme();

@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * @file TermeVedette.php
+ * @brief Creation d'objets TermeVedette, extend Terme
+ * @author Brice V.
+ * @class TermeVedette
+ */
 namespace ProjetBDD\GeneralBundle\Entity;
 
 use ProjetBDD\GeneralBundle\Entity\Terme;

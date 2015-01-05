@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @file DefaultController.php
+ * @brief Controleur de recherche et d'affichage de terme/concept
+ * @author Baptiste L.
+ * @class DefaultController
+ */
+
 namespace ProjetBDD\GeneralBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -16,7 +23,11 @@ class DefaultController extends Controller
 
         return $this->render('ProjetBDDGeneralBundle:Default:index.html.twig', array('result' => $result));
     }
-
+    /*
+	@author Baptiste L.
+	@param nom saisie par l'utilisateur
+	@return un concept/terme ou rien
+    */
     public function rechercheAction()
     {
     	//Erreur si pas de requete post ou aucun resultat
@@ -38,7 +49,11 @@ class DefaultController extends Controller
         	return $this->render('ProjetBDDGeneralBundle:Default:recherche.html.twig', array());
         }
     }
-
+    /*
+	@author Baptiste L.
+	@param nom d'un terme
+	@return toutes les informations liées au terme (association, synonymes...)
+    */
     public function afficherTermeAction($nom) {
     	$crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
     	$crudTermeVedette = $this->container->get('ProjetBDD.CRUD.TermeVedette');
@@ -46,7 +61,7 @@ class DefaultController extends Controller
     	$terme = $crudTerme->getByNom($nom);
 
     	if (isset($nom)) {
-    		$connect = oci_connect('SYSTEM', 'Don699mute156', 'localhost/xe');
+    		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
     		//On va rechercher le terme vedette, on remontera au concept grace a ca
 			$requete = oci_parse($connect, 'SELECT nomTerme FROM TermeVedette t, Table(T.associe) t2 WHERE DEREF(VALUE(t2)).nomTerme = :nomT ');
 			oci_bind_by_name($requete, ':nomT', $nom);
@@ -92,17 +107,17 @@ class DefaultController extends Controller
 
 			foreach ($tabAssoc as $key => $value) {
 				$terme2 = $crudTerme->getByNom($value);
-				if (!$terme2->isTermeVedette()) {
+				//if (!$terme2->isTermeVedette()) {
 					$retourAssoc[] = $terme2;
-				}
+				//}
 				
 			}
 			$retourTrad = array();
 			foreach ($tabTrad as $key => $value) {
 				$terme2 = $crudTerme->getByNom($value);
-				if (!$terme2->isTermeVedette()) {
+				//if (!$terme2->isTermeVedette()) {
 					$retourTrad[] = $terme2;
-				}
+				//}
 			}
 			$retourSyn = array();
 			foreach ($tabSynonyme as $key => $value) {
@@ -133,6 +148,11 @@ class DefaultController extends Controller
     	oci_close($connect);
     }
 
+	/*
+	@author Baptiste L.
+	@param nom d'un concept
+	@return toutes les informations liées au concept (generalise, specialise...)
+    */
     public function afficherConceptAction($nom) {
     	//On recupere l'objet associé
     	$crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
@@ -140,7 +160,7 @@ class DefaultController extends Controller
     	if (isset($nom)) {
     		$concept = $crudConcept->getByNom($nom);
     		//On va aller dans la BDD, recuperer le termevedette associé a ce concept.
-    		$connect = oci_connect('SYSTEM', 'Don699mute156', 'localhost/xe');
+    		$connect = oci_connect('ProjetBDD', 'pass', 'localhost/xe');
 
 			if (!$connect)
 			{

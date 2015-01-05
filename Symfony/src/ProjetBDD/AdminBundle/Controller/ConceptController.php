@@ -15,6 +15,12 @@ use ProjetBDD\GeneralBundle\Entity\TermeVedette;
 
 class ConceptController extends Controller
 { 
+    /*
+        @author Brice V.
+        @action Creer un concept
+        @params Nom du concept, description
+        @return Sucess / Fail
+    */
     public function creerAction()
     {
         $crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
@@ -49,6 +55,12 @@ class ConceptController extends Controller
         }
     }
 
+    /*
+        @author Brice V.
+        @action Modifier un concept, description, generalisation, specialisation
+        @params nom d'un concept
+        @return sucess / fail
+    */
     public function modificationAction($nom)
     {
         $crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');
@@ -83,6 +95,12 @@ class ConceptController extends Controller
        	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'tabConcept' => $tabConcept, 'termeVedette' => $termeVedette));
     }
 
+    /*
+        @author Brice V.
+        @action Modifie la liste des generalisations
+        @params Concept a modifier, tableau des concepts a mettre a jour
+        @return Sucess / fail
+    */
     public function modifierGeneralise($request, $concept, $crudConcept, $tabConcept, $termeVedette)
     {
     	$tabC = $concept->getGeneralise();
@@ -121,6 +139,12 @@ class ConceptController extends Controller
     	return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'termeVedette' => $termeVedette, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
+    /*
+        @author Brice V.
+        @action Modifie la liste des specialisations
+        @params Concept a modifier, tableau des concepts a mettre a jour
+        @return Success / Fail
+    */
     public function modifierSpecialise($request, $concept, $crudConcept, $tabConcept, $termeVedette)
     {
         $tabC = $concept->getSpecialise();
@@ -159,6 +183,12 @@ class ConceptController extends Controller
         return $this->render('ProjetBDDAdminBundle:Concept:modification.html.twig', array('concept' => $concept, 'termeVedette' => $termeVedette, 'tabConcept' => $tabConcept, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
+    /*
+        @author Brice V.
+        @action Suprime un concept
+        @params Nom du concept
+        @return redirection d'url
+    */
     public function supprimerAction($nom)
     {
         $crudConcept = $this->container->get('ProjetBDD.CRUD.Concept');

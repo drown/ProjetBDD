@@ -17,6 +17,12 @@ use ProjetBDD\GeneralBundle\Entity\TermeVedette;
 
 class TermeController extends Controller
 { 
+    /*
+    @author Brice V.
+    @action creer un terme via panneau admin
+    @param nom et description du terme
+    @return Sucess / fail
+    */
     public function creerAction()
     {
         $crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
@@ -41,6 +47,12 @@ class TermeController extends Controller
         }
     }
 
+    /*
+    @author Brice V.
+    @action modifie un terme (associe / traduit ou synonyme)
+    @param nom du terme
+    @return Sucess / fail
+    */
     public function modificationAction($nom)
     {
         $crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
@@ -86,7 +98,12 @@ class TermeController extends Controller
         //asort($tabTermeV);
        	return $this->render('ProjetBDDAdminBundle:Terme:modification.html.twig', array('terme' => $terme, 'tabTerme' => $tabTerme, 'tabTermeV' => $tabTermeV));
     }
-
+    /*
+    @author Brice V.
+    @action modifie un terme (associe)
+    @param nom du terme
+    @return Sucess / fail
+    */
     public function modifierAssocie($request, $terme, $crudTerme, $tabTerme, $tabTermeV)
     {
     	$tabT = $terme->getAssocie();
@@ -126,6 +143,12 @@ class TermeController extends Controller
     	return $this->render('ProjetBDDAdminBundle:Terme:modification.html.twig', array('terme' => $terme, 'tabTerme' => $tabTerme, 'tabTermeV' => $tabTermeV, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
+    /*
+    @author Brice V.
+    @action modifie un terme (traduit)
+    @param nom du terme
+    @return Sucess / fail
+    */
     public function modifierTraduit($request, $terme, $crudTerme, $tabTerme, $tabTermeV)
     {
         $tabT = $terme->getTraduit();
@@ -166,6 +189,12 @@ class TermeController extends Controller
         return $this->render('ProjetBDDAdminBundle:Terme:modification.html.twig', array('terme' => $terme, 'tabTerme' => $tabTerme, 'tabTermeV' => $tabTermeV, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
+    /*
+    @author Brice V.
+    @action modifie un terme (Synonymes)
+    @param nom du terme
+    @return Sucess / fail
+    */
     public function modifierSynonymes($request, $terme, $crudTerme, $tabTerme, $tabTermeV)
     {
         $crudTermeVedette = $this->container->get('ProjetBDD.CRUD.TermeVedette');
@@ -215,6 +244,12 @@ class TermeController extends Controller
         return $this->render('ProjetBDDAdminBundle:Terme:modification.html.twig', array('terme' => $terme, 'tabTerme' => $tabTerme, 'tabTermeV' => $tabTermeV, 'flash' => 'Modification effectuée !', 'typeFlash' => 'success'));
     }
 
+    /*
+    @author Brice V.
+    @action supprime un terme 
+    @param nom du terme
+    @return redirection d'url
+    */
     public function supprimerAction($nom)
     {
         $crudTerme = $this->container->get('ProjetBDD.CRUD.Terme');
