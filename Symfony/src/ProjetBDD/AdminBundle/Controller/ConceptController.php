@@ -21,7 +21,7 @@ class ConceptController extends Controller
             $concept->setDescription($request->request->get('description'));
 
             $termeVedette = new TermeVedette;
-            $termeVedette->setNomTerme($request->request->get('nomTermeVedette'));
+            $termeVedette->setNomTerme($request->request->get('nomConcept'));
             $termeVedette->setDescription($request->request->get('descriptionTermeVedette'));
             $termeVedette->setConcept($concept);
 
@@ -68,7 +68,7 @@ class ConceptController extends Controller
         	}
         	elseif (isset($_POST['specialiseAction']))
         	{
-        		return $this->modificationSpecialise($request, $concept, $crudConcept, $tabConcept, $termeVedette);
+        		return $this->modifierSpecialise($request, $concept, $crudConcept, $tabConcept, $termeVedette);
         	}
         }
         //asort($tabConcept);
