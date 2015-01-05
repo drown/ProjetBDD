@@ -131,7 +131,7 @@ class TermeController extends Controller
             {
                 $c = $crudTerme->getByNom($g);  
 
-                if (!in_array($g, $tabT)
+                if (!in_array($g, $tabT))
                 {
                     $c->addTraduit($terme->getNomTerme());
 
@@ -175,7 +175,7 @@ class TermeController extends Controller
                 {
                     $c = $crudTermeVedette->getByNom($g);
 
-                    if (!in_array($g, $tabT)
+                    if (!in_array($g, $tabT))
                     {
                         $c->addSynonymes($terme->getNomTerme());
 
