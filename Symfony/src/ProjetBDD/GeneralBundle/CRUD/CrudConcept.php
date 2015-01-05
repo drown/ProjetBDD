@@ -18,7 +18,7 @@ class CrudConcept
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept');
+		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept ORDER BY nomConcept ASC');
 
 		$exe = oci_execute($requete);
 
@@ -45,7 +45,7 @@ class CrudConcept
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept WHERE LOWER(nomConcept) LIKE LOWER(:debut) OR LOWER(nomConcept) LIKE LOWER(:milieu) OR LOWER(nomConcept) LIKE LOWER(:fin) OR LOWER(nomConcept) = LOWER(:nom)');
+		$requete = oci_parse($connect, 'SELECT nomConcept, description FROM Concept WHERE LOWER(nomConcept) LIKE LOWER(:debut) OR LOWER(nomConcept) LIKE LOWER(:milieu) OR LOWER(nomConcept) LIKE LOWER(:fin) OR LOWER(nomConcept) = LOWER(:nom) ORDER BY nomConcept ASC');
 		$milieu = '%' . $nom . '%';
 		$debut = $nom . '%';
 		$fin = '%' . $nom;

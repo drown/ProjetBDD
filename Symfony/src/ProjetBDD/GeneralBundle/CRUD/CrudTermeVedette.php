@@ -18,7 +18,7 @@ class CrudTermeVedette extends CrudTerme
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		$requete = oci_parse($connect, 'SELECT nomTerme, description, DEREF(concept).nomConcept AS nomC FROM TermeVedette');
+		$requete = oci_parse($connect, 'SELECT nomTerme, description, DEREF(concept).nomConcept AS nomC FROM TermeVedette ORDER BY nomTerme ASC');
 
 		$exe = oci_execute($requete);
 

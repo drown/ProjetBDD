@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use ProjetBDD\GeneralBundle\Entity\Terme;
 use ProjetBDD\GeneralBundle\Entity\TermeVedette;
 
+
+
 class TermeController extends Controller
 { 
     public function creerAction()
@@ -43,6 +45,11 @@ class TermeController extends Controller
         $tabTermeV = $crudTermeVedette->getAll();
 
         $tabTerme = array_merge($tabTermeS, $tabTermeV);
+
+        usort($tabTerme, function ($a, $b)
+{   
+        return strnatcasecmp($a->getNomTerme(), $b->getNomTerme());
+});
 
         if ($request->getMethod() == 'POST')
         {

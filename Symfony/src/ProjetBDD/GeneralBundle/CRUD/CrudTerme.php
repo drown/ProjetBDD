@@ -72,7 +72,7 @@ class CrudTerme
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		$requete = oci_parse($connect, 'SELECT nomTerme, description FROM Terme');
+		$requete = oci_parse($connect, 'SELECT nomTerme, description FROM Terme ORDER BY nomTerme ASC');
 
 		$exe = oci_execute($requete);
 
@@ -99,7 +99,7 @@ class CrudTerme
 			throw new \Exception('Erreur de connexion : '. $e['message']);
 		}
 
-		$requete = oci_parse($connect, 'SELECT nomTerme, description FROM Terme WHERE LOWER(nomTerme) LIKE LOWER(:debut) OR LOWER(nomTerme) LIKE LOWER(:milieu) OR LOWER(nomTerme) LIKE LOWER(:fin) OR LOWER(nomTerme) = LOWER(:nom)');
+		$requete = oci_parse($connect, 'SELECT nomTerme, description FROM Terme WHERE LOWER(nomTerme) LIKE LOWER(:debut) OR LOWER(nomTerme) LIKE LOWER(:milieu) OR LOWER(nomTerme) LIKE LOWER(:fin) OR LOWER(nomTerme) = LOWER(:nom) ORDER BY nomTerme ASC');
 		$milieu = '%' . $nom . '%';
 		$debut = $nom . '%';
 		$fin = '%' . $nom;
