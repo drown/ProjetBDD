@@ -144,7 +144,7 @@ class TermeController extends Controller
 
         foreach ($tabT as $g)
         {
-            if (!in_array($g, $terme->getAssocie()))
+            if (!in_array($g, $terme->getTraduit()))
             {
                 $c = $crudTerme->getByNom($g);
                 $c->removeTraduit($terme->getNomTerme());
