@@ -85,10 +85,14 @@ class ConceptController extends Controller
     	{
     		foreach ($tabGeneralise as $g)
     		{
-    			$c = $crudConcept->getByNom($g);	
-    			$c->addSpecialise($concept->getNomConcept());
+    			$c = $crudConcept->getByNom($g);
 
-    			$crudConcept->update($c);
+                if (!in_array($g, $tabC))
+                {
+                    $c->addSpecialise($concept->getNomConcept());
+
+                    $crudConcept->update($c);
+                }
 
     			$concept->addGeneralise($g);
     		}
@@ -119,10 +123,14 @@ class ConceptController extends Controller
         {
             foreach ($tabSpecialise as $g)
             {
-                $c = $crudConcept->getByNom($g);    
-                $c->addGeneralise($concept->getNomConcept());
+                $c = $crudConcept->getByNom($g);
 
-                $crudConcept->update($c);
+                if (!in_array($g, $tabC))
+                {
+                    $c->addGeneralise($concept->getNomConcept());
+
+                    $crudConcept->update($c);
+                }
 
                 $concept->addSpecialise($g);
             }

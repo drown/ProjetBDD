@@ -91,9 +91,12 @@ class TermeController extends Controller
     		foreach ($tabAssocie as $g)
     		{
     			$c = $crudTerme->getByNom($g);
-    			$c->addAssocie($terme->getNomTerme());
 
-    			$crudTerme->update($c);
+                if (!in_array($g, $tabT))
+                {
+                    $c->addAssocie($terme->getNomTerme());
+                    $crudTerme->update($c);
+                }
 
     			$terme->addAssocie($g);
     		}
@@ -127,9 +130,13 @@ class TermeController extends Controller
             foreach ($tabTraduit as $g)
             {
                 $c = $crudTerme->getByNom($g);  
-                $c->addTraduit($terme->getNomTerme());
 
-                $crudTerme->update($c);
+                if (!in_array($g, $tabT)
+                {
+                    $c->addTraduit($terme->getNomTerme());
+
+                    $crudTerme->update($c);
+                }
 
                 $terme->addTraduit($g);
             }
@@ -167,9 +174,13 @@ class TermeController extends Controller
                 if ($terme instanceof TermeVedette)
                 {
                     $c = $crudTermeVedette->getByNom($g);
-                    $c->addSynonymes($terme->getNomTerme());
 
-                    $crudTermeVedette->update($c);
+                    if (!in_array($g, $tabT)
+                    {
+                        $c->addSynonymes($terme->getNomTerme());
+
+                        $crudTermeVedette->update($c);
+                    }   
                 }
 
                 $terme->addSynonymes($g);
