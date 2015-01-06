@@ -69,9 +69,16 @@
 					<tbody>
 						{% for terme in tabAssoc %}
 							<tr>
-								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
-								<td>{{terme.description}}</td>
-								<td>Terme</td>
+								{% if terme.istermevedette %}
+
+									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+									<td>{{terme.description}}</td>
+									<td>Concept</td>
+								{% else %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+									<td>{{terme.description}}</td>
+									<td>Terme</td>
+								{% endif %}
 							</tr>
 						{% endfor %}
 					</tbody>
@@ -101,11 +108,16 @@
 					<tbody>
 						{% for terme in tabTraduit %}
 							<tr>
-								<tr>
-								<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
-								<td>{{terme.description}}</td>
-								<td>Terme</td>
-							</tr>
+								{% if terme.istermevedette %}
+
+									<td><a href="{{path('ProjetBDDGeneralAfficheConcept', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+									<td>{{terme.description}}</td>
+									<td>Concept</td>
+								{% else %}
+									<td><a href="{{path('ProjetBDDGeneralAfficheTerme', {'nom' : terme.nomTerme})}}" type="button" class="btn btn-default">{{terme.nomTerme}}</a></td>
+									<td>{{terme.description}}</td>
+									<td>Terme</td>
+								{% endif %}
 							</tr>
 						{% endfor %}
 					</tbody>
